@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancer Outcome Prediction | Cancer Digital Twin</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">Cancer<span>DT</span></div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#about">About</a></li>
+                    <li><a href="index.html#models">Our Models</a></li>
+                    <li><a href="index.html#validation">Validation</a></li>
+                    <li><a href="demo.html">Interactive Demo</a></li>
+                    <li><a href="prediction.html" class="active">Prediction</a></li>
+                    <li><a href="simulation.html">Simulation</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section class="prediction-hero">
+        <div class="container">
+            <div class="prediction-hero-content">
+                <h1>Precision Cancer Outcome Prediction</h1>
+                <p>Statistical prediction models powered by real-world clinical data to forecast survival, recurrence, and treatment response with confidence intervals.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="prediction-types">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Outcome Prediction Models</h2>
+                <p>Select a prediction type to generate personalized forecasts</p>
+            </div>
+            
+            <div class="prediction-tabs">
+                <button class="prediction-tab active" data-target="survival-prediction">Survival Prediction</button>
+                <button class="prediction-tab" data-target="recurrence-prediction">Recurrence Risk</button>
+                <button class="prediction-tab" data-target="treatment-prediction">Treatment Response</button>
+            </div>
+            
+            <div class="prediction-content">
+                <!-- Survival Prediction Tab -->
+                <div class="prediction-panel active" id="survival-prediction">
+                    <div class="prediction-form-container">
+                        <div class="prediction-inputs">
+                            <h3>Patient Information</h3>
+                            <div class="form-group">
+                                <label for="sp-patientAge">Age</label>
+                                <input type="number" id="sp-patientAge" min="20" max="90" value="55">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="sp-tumorSize">Tumor Size (mm)</label>
+                                <input type="number" id="sp-tumorSize" min="1" max="100" value="25">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="sp-tumorGrade">Tumor Grade</label>
+                                <select id="sp-tumorGrade">
+                                    <option value="1">Grade 1</option>
+                                    <option value="2" selected>Grade 2</option>
+                                    <option value="3">Grade 3</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="sp-nodesPositive">Lymph Nodes Positive</label>
+                                <input type="number" id="sp-nodesPositive" min="0" max="20" value="1">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="sp-erStatus">ER Status</label>
+                                <select id="sp-erStatus">
+                                    <option value="positive" selected>Positive</option>
+                                    <option value="negative">Negative</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="sp-her2Status">HER2 Status</label>
+                                <select id="sp-her2Status">
+                                    <option value="positive">Positive</option>
+                                    <option value="negative" selected>Negative</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="sp-years">Prediction Timeframe (years)</label>
+                                <select id="sp-years">
+                                    <option value="3">3 Years</option>
+                                    <option value="5" selected>5 Years</option>
+                                    <option value="10">10 Years</option>
+                                </select>
+                            </div>
+                            
+                            <button id="runSurvivalPrediction" class="btn btn-primary">Generate Survival Prediction</button>
+                        </div>
+                        
+                        <div class="prediction-results">
+                            <h3>Survival Prediction</h3>
+                            <div id="survivalLoadingIndicator" class="loading-indicator" style="display: none;">
+                                <div class="spinner"></div>
+                                <p>Calculating survival prediction...</p>
+                            </div>
+                            
+                            <div id="survivalResultsContainer" class="results-content">
+                                <div class="prediction-summary">
+                                    <p class="placeholder">Run prediction to see results</p>
+                                </div>
+                                
+                                <div class="chart-container" style="display: none;">
+                                    <h4>Survival Curve Projection</h4>
+                                    <canvas id="survivalChart"></canvas>
+                                </div>
+                                
+                                <div class="risk-factors" style="display: none;">
+                                    <h4>Risk Modifiers</h4>
+                                    <div id="riskModifiers"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recurrence Prediction Tab -->
+                <div class="prediction-panel" id="recurrence-prediction">
+                    <div class="prediction-form-container">
+                        <div class="prediction-inputs">
+                            <h3>Patient Information</h3>
+                            <div class="form-group">
+                                <label for="rp-patientAge">Age</label>
+                                <input type="number" id="rp-patientAge" min="20" max="90" value="55">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="rp-tumorSize">Tumor Size (mm)</label>
+                                <input type="number" id="rp-tumorSize" min="1" max="100" value="25">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="rp-tumorGrade">Tumor Grade</label>
+                                <select id="rp-tumorGrade">
+                                    <option value="1">Grade 1</option>
+                                    <option value="2" selected>Grade 2</option>
+                                    <option value="3">Grade 3</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="rp-nodesPositive">Lymph Nodes Positive</label>
+                                <input type="number" id="rp-nodesPositive" min="0" max="20" value="1">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="rp-erStatus">ER Status</label>
+                                <select id="rp-erStatus">
+                                    <option value="positive" selected>Positive</option>
+                                    <option value="negative">Negative</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="rp-her2Status">HER2 Status</label>
+                                <select id="rp-her2Status">
+                                    <option value="positive">Positive</option>
+                                    <option value="negative" selected>Negative</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="rp-years">Prediction Timeframe (years)</label>
+                                <select id="rp-years">
+                                    <option value="3">3 Years</option>
+                                    <option value="5" selected>5 Years</option>
+                                    <option value="10">10 Years</option>
+                                </select>
+                            </div>
+                            
+                            <button id="runRecurrencePrediction" class="btn btn-primary">Generate Recurrence Prediction</button>
+                        </div>
+                        
+                        <div class="prediction-results">
+                            <h3>Recurrence Prediction</h3>
+                            <div id="recurrenceLoadingIndicator" class="loading-indicator" style="display: none;">
+                                <div class="spinner"></div>
+                                <p>Calculating recurrence prediction...</p>
+                            </div>
+                            
+                            <div id="recurrenceResultsContainer" class="results-content">
+                                <div class="prediction-summary">
+                                    <p class="placeholder">Run prediction to see results</p>
+                                </div>
+                                
+                                <div class="recurrence-breakdown" style="display: none;">
+                                    <h4>Recurrence Risk Breakdown</h4>
+                                    <canvas id="recurrenceChart"></canvas>
+                                </div>
+                                
+                                <div class="recurrence-timeline" style="display: none;">
+                                    <h4>Recurrence Timeline</h4>
+                                    <canvas id="recurrenceTimelineChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Treatment Response Prediction Tab -->
+                <div class="prediction-panel" id="treatment-prediction">
+                    <div class="prediction-form-container">
+                        <div class="prediction-inputs">
+                            <h3>Patient & Treatment Information</h3>
+                            <div class="form-group">
+                                <label for="tp-patientAge">Age</label>
+                                <input type="number" id="tp-patientAge" min="20" max="90" value="55">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="tp-tumorSize">Tumor Size (mm)</label>
+                                <input type="number" id="tp-tumorSize" min="1" max="100" value="25">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="tp-tumorGrade">Tumor Grade</label>
+                                <select id="tp-tumorGrade">
+                                    <option value="1">Grade 1</option>
+                                    <option value="2" selected>Grade 2</option>
+                                    <option value="3">Grade 3</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="tp-erStatus">ER Status</label>
+                                <select id="tp-erStatus">
+                                    <option value="positive" selected>Positive</option>
+                                    <option value="negative">Negative</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="tp-her2Status">HER2 Status</label>
+                                <select id="tp-her2Status">
+                                    <option value="positive">Positive</option>
+                                    <option value="negative" selected>Negative</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Treatment Plan</label>
+                                <div class="checkbox-group">
+                                    <label>
+                                        <input type="checkbox" id="tp-surgery" checked> Surgery
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="tp-chemotherapy"> Chemotherapy
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="tp-radiation" checked> Radiation
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="tp-endocrine"> Endocrine Therapy
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="tp-targeted"> Targeted Therapy
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <button id="runTreatmentPrediction" class="btn btn-primary">Predict Treatment Response</button>
+                        </div>
+                        
+                        <div class="prediction-results">
+                            <h3>Treatment Response Prediction</h3>
+                            <div id="treatmentLoadingIndicator" class="loading-indicator" style="display: none;">
+                                <div class="spinner"></div>
+                                <p>Calculating treatment response...</p>
+                            </div>
+                            
+                            <div id="treatmentResultsContainer" class="results-content">
+                                <div class="prediction-summary">
+                                    <p class="placeholder">Run prediction to see results</p>
+                                </div>
+                                
+                                <div class="treatment-efficacy" style="display: none;">
+                                    <h4>Treatment Efficacy</h4>
+                                    <canvas id="efficacyChart"></canvas>
+                                </div>
+                                
+                                <div class="side-effects" style="display: none;">
+                                    <h4>Potential Side Effects</h4>
+                                    <div id="sideEffectsContainer"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="prediction-explanation">
+        <div class="container">
+            <div class="section-heading">
+                <h2>About Our Prediction Models</h2>
+                <p>Statistical approaches for personalized cancer outcome prediction</p>
+            </div>
+            
+            <div class="prediction-methods">
+                <div class="method-card">
+                    <div class="method-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Survival Analysis</h3>
+                    <p>Our survival prediction models use modified Cox Proportional Hazards approaches integrating clinical factors, biomarkers, and genomic features to create personalized survival curves with confidence intervals.</p>
+                </div>
+                
+                <div class="method-card">
+                    <div class="method-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <h3>Recurrence Risk</h3>
+                    <p>Recurrence risk prediction leverages pattern recognition across thousands of similar patients to distinguish between local, regional, and distant recurrence probabilities over time.</p>
+                </div>
+                
+                <div class="method-card">
+                    <div class="method-icon">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <h3>Treatment Response</h3>
+                    <p>Our treatment response models integrate molecular profiles with clinical trial data to predict efficacy and side effect likelihoods for specific treatment regimens in individual patients.</p>
+                </div>
+            </div>
+            
+            <div class="method-details">
+                <p>These prediction models are trained on comprehensive datasets from METABRIC, TCGA, and clinical trials. They provide statistical forecasts based on observed outcomes in patients with similar profiles, with validated accuracy and calibration.</p>
+                <p>Unlike simulation models that explore possible scenarios, prediction models focus on generating the most likely outcomes with statistical confidence based on observed data patterns.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <div class="footer-logo">Cancer<span>DT</span></div>
+                    <p>Advanced digital twin technology for precision oncology.</p>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#about">About</a></li>
+                        <li><a href="index.html#models">Our Models</a></li>
+                        <li><a href="index.html#validation">Validation</a></li>
+                        <li><a href="demo.html">Interactive Demo</a></li>
+                        <li><a href="prediction.html">Prediction</a></li>
+                        <li><a href="simulation.html">Simulation</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-contact">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-envelope"></i> info@cancerdigitaltwin.org</p>
+                    <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Cancer Digital Twin Project. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="prediction.js" type="module"></script>
+</body>
+</html> 

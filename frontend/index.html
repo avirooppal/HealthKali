@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancer Digital Twin | Precision Oncology Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard-styles.css">
+    <link rel="stylesheet" href="/css/analysis.css">
+    <link href="/frontend/dashboard-fix.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">Cancer<span>DT</span></div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#home" class="active">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#models">Our Models</a></li>
+                    <li><a href="#validation">Validation</a></li>
+                    <li><a href="dashboard.html">Dashboard</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Digital Twin Technology for Cancer Prediction</h1>
+                <p>Advanced simulation models for personalized cancer risk assessment, treatment optimization, and disease progression prediction.</p>
+                <div class="cta-buttons">
+                    <a href="#models" class="btn btn-primary">Explore Models</a>
+                    <a href="#about" class="btn btn-secondary">Learn More</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://placehold.co/600x400/e0f2fe/1e40af?text=Cancer+Digital+Twin" alt="Cancer Digital Twin Visualization">
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-heading">
+                <h2>About Cancer Digital Twin</h2>
+                <p>Understanding our comprehensive approach to digital oncology</p>
+            </div>
+            
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>What is a Cancer Digital Twin?</h3>
+                    <p>A Cancer Digital Twin is a virtual computational model that simulates the biological characteristics and behavior of a patient's cancer. It integrates clinical data, genomic information, and advanced algorithms to create a personalized model that can predict cancer risk, treatment responses, and disease progression.</p>
+                    
+                    <h3>How Our Architecture Works</h3>
+                    <p>Our system integrates multiple data sources including clinical records from TCGA and METABRIC datasets, imaging data, and molecular profiles to create a comprehensive virtual representation of a patient's disease. The architecture incorporates:</p>
+                    
+                    <ul class="feature-list">
+                        <li>
+                            <i class="fas fa-dna"></i>
+                            <div>
+                                <h4>Risk Assessment Models</h4>
+                                <p>Calculate baseline and advanced risk based on clinical factors and molecular markers</p>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-pills"></i>
+                            <div>
+                                <h4>Treatment Simulation</h4>
+                                <p>Predict treatment efficacy and side effects for personalized therapy planning</p>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-chart-line"></i>
+                            <div>
+                                <h4>Disease Progression Modeling</h4>
+                                <p>Simulate cancer progression using Markov models and statistical approaches</p>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-code-branch"></i>
+                            <div>
+                                <h4>Modular API Architecture</h4>
+                                <p>FastAPI backend with modular components for flexibility and scalability</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="about-benefits">
+                    <h3>Clinical Benefits</h3>
+                    <div class="benefits-grid">
+                        <div class="benefit-card">
+                            <div class="benefit-icon"><i class="fas fa-user-md"></i></div>
+                            <h4>Personalized Treatment Planning</h4>
+                            <p>Optimize therapy selection based on individual patient characteristics</p>
+                        </div>
+                        <div class="benefit-card">
+                            <div class="benefit-icon"><i class="fas fa-heartbeat"></i></div>
+                            <h4>Reduced Treatment Toxicity</h4>
+                            <p>Predict and minimize adverse effects through simulation</p>
+                        </div>
+                        <div class="benefit-card">
+                            <div class="benefit-icon"><i class="fas fa-clock"></i></div>
+                            <h4>Early Intervention</h4>
+                            <p>Identify high-risk patients who need more aggressive approaches</p>
+                        </div>
+                        <div class="benefit-card">
+                            <div class="benefit-icon"><i class="fas fa-clipboard-check"></i></div>
+                            <h4>Clinical Decision Support</h4>
+                            <p>Evidence-based recommendations for multidisciplinary tumor boards</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="models" class="models">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Our Models</h2>
+                <p>Comprehensive pipeline for cancer digital twin simulation</p>
+            </div>
+            
+            <div class="pipeline-container">
+                <div class="pipeline-nav">
+                    <button class="pipeline-tab active" data-target="data-integration">Data Integration</button>
+                    <button class="pipeline-tab" data-target="risk-assessment">Risk Assessment</button>
+                    <button class="pipeline-tab" data-target="treatment">Treatment Analysis</button>
+                    <button class="pipeline-tab" data-target="progression">Disease Progression</button>
+                    <button class="pipeline-tab" data-target="validation">Validation</button>
+                </div>
+                
+                <div class="pipeline-content">
+                    <div class="pipeline-item active" id="data-integration">
+                        <div class="pipeline-image">
+                            <img src="https://placehold.co/600x400/e0f2fe/1e40af?text=Data+Integration" alt="Data Integration Pipeline">
+                        </div>
+                        <div class="pipeline-description">
+                            <h3>Data Integration</h3>
+                            <p>Our data integration pipeline combines clinical data, genomic profiles, and imaging results into a unified patient representation.</p>
+                            <h4>Key Components:</h4>
+                            <ul>
+                                <li><strong>Data Importer:</strong> Loads and processes data from TCGA, METABRIC, and Wisconsin datasets</li>
+                                <li><strong>Feature Harmonization:</strong> Standardizes data from different sources</li>
+                                <li><strong>Missing Data Handling:</strong> Imputes missing values using advanced techniques</li>
+                                <li><strong>Patient Profile Creation:</strong> Generates comprehensive digital patient profiles</li>
+                            </ul>
+                            <div class="tech-stack">
+                                <span class="tech-tag">Python</span>
+                                <span class="tech-tag">Pandas</span>
+                                <span class="tech-tag">scikit-learn</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pipeline-item" id="risk-assessment">
+                        <div class="pipeline-image">
+                            <img src="https://placehold.co/600x400/e0f2fe/1e40af?text=Risk+Assessment" alt="Risk Assessment Models">
+                        </div>
+                        <div class="pipeline-description">
+                            <h3>Risk Assessment Models</h3>
+                            <p>Our risk models estimate cancer recurrence and mortality risk based on clinical and molecular features.</p>
+                            <h4>Risk Model Pipeline:</h4>
+                            <ul>
+                                <li><strong>Baseline Risk:</strong> Clinical risk factors including age, tumor size, grade, and receptor status</li>
+                                <li><strong>Advanced Risk:</strong> Incorporates genomic features and complex interactions</li>
+                                <li><strong>Nottingham Prognostic Index:</strong> Validated clinical risk stratification</li>
+                                <li><strong>Competing Risk Analysis:</strong> Distinguishes cancer vs. non-cancer mortality risk</li>
+                            </ul>
+                            <div class="tech-stack">
+                                <span class="tech-tag">Statistical Modeling</span>
+                                <span class="tech-tag">Cox Proportional Hazards</span>
+                                <span class="tech-tag">Machine Learning</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pipeline-item" id="treatment">
+                        <div class="pipeline-image">
+                            <img src="https://placehold.co/600x400/e0f2fe/1e40af?text=Treatment+Analysis" alt="Treatment Analysis Pipeline">
+                        </div>
+                        <div class="pipeline-description">
+                            <h3>Treatment Analysis Models</h3>
+                            <p>Our treatment models simulate response to various therapeutic interventions and generate recommendations.</p>
+                            <h4>Treatment Model Components:</h4>
+                            <ul>
+                                <li><strong>Treatment Response Simulation:</strong> Predicts efficacy of different treatment modalities</li>
+                                <li><strong>Side Effect Prediction:</strong> Estimates likelihood and severity of treatment toxicities</li>
+                                <li><strong>Treatment Recommendation:</strong> NCCN guideline-based therapy suggestions</li>
+                                <li><strong>Treatment Sequencing:</strong> Optimizes multi-modality treatment approaches</li>
+                            </ul>
+                            <div class="tech-stack">
+                                <span class="tech-tag">Probabilistic Modeling</span>
+                                <span class="tech-tag">Clinical Guidelines</span>
+                                <span class="tech-tag">Simulation</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pipeline-item" id="progression">
+                        <div class="pipeline-image">
+                            <img src="https://placehold.co/600x400/e0f2fe/1e40af?text=Disease+Progression" alt="Disease Progression Models">
+                        </div>
+                        <div class="pipeline-description">
+                            <h3>Disease Progression Models</h3>
+                            <p>Our progression models simulate the natural history and treatment-modified evolution of cancer over time.</p>
+                            <h4>Progression Modeling Pipeline:</h4>
+                            <ul>
+                                <li><strong>Markov State Transitions:</strong> Models progression through disease states</li>
+                                <li><strong>Survival Curve Prediction:</strong> Estimates time-dependent survival probabilities</li>
+                                <li><strong>Growth Models:</strong> Simulates tumor growth patterns (linear, exponential, Gompertz)</li>
+                                <li><strong>Treatment Effect Modulation:</strong> Adjusts progression based on interventions</li>
+                            </ul>
+                            <div class="tech-stack">
+                                <span class="tech-tag">Markov Models</span>
+                                <span class="tech-tag">Survival Analysis</span>
+                                <span class="tech-tag">Growth Equations</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pipeline-item" id="validation">
+                        <div class="pipeline-image">
+                            <img src="https://placehold.co/600x400/e0f2fe/1e40af?text=Validation" alt="Validation Framework">
+                        </div>
+                        <div class="pipeline-description">
+                            <h3>Validation Framework</h3>
+                            <p>Our comprehensive validation ensures predictions align with real-world clinical outcomes.</p>
+                            <h4>Validation Approach:</h4>
+                            <ul>
+                                <li><strong>Dataset Comparison:</strong> Evaluates model against METABRIC and TCGA cohorts</li>
+                                <li><strong>Literature Benchmarking:</strong> Compares results to published studies and meta-analyses</li>
+                                <li><strong>Calibration Assessment:</strong> Ensures predicted probabilities match observed frequencies</li>
+                                <li><strong>Visualization:</strong> Generates intuitive plots for prediction assessment</li>
+                            </ul>
+                            <div class="tech-stack">
+                                <span class="tech-tag">Statistical Testing</span>
+                                <span class="tech-tag">Matplotlib</span>
+                                <span class="tech-tag">Seaborn</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="validation" class="validation">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Validation Results</h2>
+                <p>Performance metrics of our Cancer Digital Twin against real-world data</p>
+            </div>
+            
+            <div class="validation-grid">
+                <div class="validation-card">
+                    <h3>Outcome Predictions</h3>
+                    <div class="validation-chart">
+                        <img src="https://placehold.co/600x400/e0f2fe/1e40af?text=Predictions+Chart" alt="Outcome Prediction Results">
+                    </div>
+                    <p>Our Digital Twin accurately predicts 5-year outcomes including survival, recurrence, and metastasis rates.</p>
+                </div>
+                
+                <div class="validation-card">
+                    <h3>Risk Score Distribution</h3>
+                    <div class="validation-chart">
+                        <img src="https://placehold.co/600x400/e0f2fe/1e40af?text=Risk+Distribution" alt="Risk Score Distribution">
+                    </div>
+                    <p>Risk scores follow established patterns across patient populations with appropriate differentiation.</p>
+                </div>
+                
+                <div class="validation-card">
+                    <h3>Literature Comparison</h3>
+                    <div class="validation-chart">
+                        <img src="https://placehold.co/600x400/e0f2fe/1e40af?text=Literature+Comparison" alt="Literature Comparison">
+                    </div>
+                    <p>Digital Twin predictions closely align with established clinical benchmarks from SEER, EBCTCG, and NCCN.</p>
+                </div>
+                
+                <div class="validation-card">
+                    <h3>Clinical Impact</h3>
+                    <ul class="impact-list">
+                        <li>Enhanced treatment decision making</li>
+                        <li>Improved patient stratification</li>
+                        <li>Personalized follow-up planning</li>
+                        <li>Reduced unnecessary treatments</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="demo" class="demo">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Interactive Demo</h2>
+                <p>Try our Digital Twin with sample patient data</p>
+            </div>
+            
+            <div class="demo-container">
+                <div class="demo-inputs">
+                    <h3>Patient Information</h3>
+                    <div class="form-group">
+                        <label for="patientAge">Age</label>
+                        <input type="number" id="patientAge" min="20" max="90" value="55">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tumorSize">Tumor Size (mm)</label>
+                        <input type="number" id="tumorSize" min="1" max="100" value="25">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tumorGrade">Tumor Grade</label>
+                        <select id="tumorGrade">
+                            <option value="1">Grade 1</option>
+                            <option value="2" selected>Grade 2</option>
+                            <option value="3">Grade 3</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="nodesPositive">Lymph Nodes Positive</label>
+                        <input type="number" id="nodesPositive" min="0" max="20" value="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="erStatus">ER Status</label>
+                        <select id="erStatus">
+                            <option value="positive" selected>Positive</option>
+                            <option value="negative">Negative</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="prStatus">PR Status</label>
+                        <select id="prStatus">
+                            <option value="positive" selected>Positive</option>
+                            <option value="negative">Negative</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="her2Status">HER2 Status</label>
+                        <select id="her2Status">
+                            <option value="positive">Positive</option>
+                            <option value="negative" selected>Negative</option>
+                        </select>
+                    </div>
+                    
+                    <button id="runSimulation" class="btn btn-primary">Run Digital Twin</button>
+                </div>
+                
+                <div class="demo-results">
+                    <h3>Results</h3>
+                    <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Processing Digital Twin simulation...</p>
+                    </div>
+                    
+                    <div id="resultsContainer" class="results-content">
+                        <div class="results-card">
+                            <h4>5-Year Risk Assessment</h4>
+                            <div id="riskResults" class="result-data">
+                                <!-- Risk results will be added here -->
+                                <p class="placeholder">Run simulation to see results</p>
+                            </div>
+                        </div>
+                        
+                        <div class="results-card">
+                            <h4>Treatment Recommendations</h4>
+                            <div id="treatmentResults" class="result-data">
+                                <!-- Treatment recommendations will be added here -->
+                                <p class="placeholder">Run simulation to see results</p>
+                            </div>
+                        </div>
+                        
+                        <div class="results-card">
+                            <h4>Progression Projection (5 Years)</h4>
+                            <div id="progressionResults" class="result-data">
+                                <!-- Progression results will be added here -->
+                                <p class="placeholder">Run simulation to see results</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="apiError" class="api-error" style="display: none;">
+                        <p><i class="fas fa-exclamation-triangle"></i> Error connecting to the backend API</p>
+                        <p class="error-message"></p>
+                        <button id="retryButton" class="btn btn-secondary">Retry</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <div class="footer-logo">Cancer<span>DT</span></div>
+                    <p>Advanced digital twin technology for precision oncology.</p>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#models">Our Models</a></li>
+                        <li><a href="#validation">Validation</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-contact">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-envelope"></i> palaviroopoff@gmail.com</p>
+                    <p>
+                        <a href="https://master--avirooppal.netlify.app/" target="_blank">
+                            <i class="fas fa-link"></i> Aviroop Pal
+                        </a>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Cancer Digital Twin Project. Made with ❤️ by 4G's</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script type="module">
+        import digitalTwinAPI from './api.js';
+        window.digitalTwinAPI = digitalTwinAPI; // Make it globally available
+    </script>
+    <script src="/js/patient-analysis.js"></script>
+    <script>
+    // IMMEDIATE FIX: Dashboard Functionality
+    (function() {
+        // 1. Initialize simple patient storage
+        const STORAGE_KEY = 'cancerDigitalTwinPatients';
+        
+        function getAllPatients() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            } catch (e) {
+                console.error('Error retrieving patients:', e);
+                return [];
+            }
+        }
+        
+        function savePatient(patient) {
+            try {
+                const patients = getAllPatients();
+                // Make sure ID is unique
+                if (patients.some(p => p.patientID === patient.patientID)) {
+                    alert('Patient ID already exists!');
+                    return false;
+                }
+                // Add metadata
+                patient.dateAdded = new Date().toISOString();
+                patient.riskScore = calculateRiskScore(patient);
+                
+                patients.push(patient);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(patients));
+                return true;
+            } catch (e) {
+                console.error('Error saving patient:', e);
+                return false;
+            }
+        }
+        
+        function calculateRiskScore(patient) {
+            const tumorSize = parseFloat(patient.tumor_size || 0);
+            const grade = parseInt(patient.grade || 1);
+            const nodesPositive = parseInt(patient.nodes_positive || 0);
+            
+            let score = (tumorSize * 0.004 + grade * 0.05 + nodesPositive * 0.03);
+            
+            if (patient.er_status === 'negative') score += 0.1;
+            if (patient.her2_status === 'positive') score += 0.05;
+            
+            return Math.max(0.1, Math.min(0.9, score));
+        }
+        
+        // 2. Update dashboard counters
+        function updateCounters() {
+            const patients = getAllPatients();
+            
+            // Update the counter elements using your exact HTML structure
+            document.querySelectorAll('.card').forEach(card => {
+                const label = card.textContent.trim();
+                let value = 0;
+                
+                if (label.includes('Total Patients')) {
+                    value = patients.length;
+                } else if (label.includes('High Risk')) {
+                    value = patients.filter(p => p.riskScore > 0.6).length;
+                } else if (label.includes('Medium Risk')) {
+                    value = patients.filter(p => p.riskScore > 0.3 && p.riskScore <= 0.6).length;
+                } else if (label.includes('Low Risk')) {
+                    value = patients.filter(p => p.riskScore <= 0.3).length;
+                }
+                
+                // Find the number element in this card
+                const numElement = card.querySelector('h1, h2, h3');
+                if (numElement) {
+                    numElement.textContent = value;
+                }
+            });
+        }
+        
+        // 3. Create patient form
+        function showCreatePatientForm() {
+            // Find where to put the form
+            const contentArea = document.querySelector('.tab-content') || 
+                              document.querySelector('main') || 
+                              document.querySelector('.container');
+                              
+            if (!contentArea) return alert('Cannot find content area!');
+            
+            // Create the form HTML
+            const formHTML = `
+                <div class="card mt-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5>Create New Patient</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="newPatientForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="patientID">Patient ID</label>
+                                    <input type="text" class="form-control" id="patientID" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="age">Age</label>
+                                    <input type="number" class="form-control" id="age" min="18" max="100" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="tumor_size">Tumor Size (mm)</label>
+                                    <input type="number" class="form-control" id="tumor_size" min="1" max="100" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="grade">Tumor Grade</label>
+                                    <select class="form-control" id="grade" required>
+                                        <option value="1">Grade 1 (Well-differentiated)</option>
+                                        <option value="2">Grade 2 (Moderately-differentiated)</option>
+                                        <option value="3">Grade 3 (Poorly-differentiated)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="nodes_positive">Positive Lymph Nodes</label>
+                                    <input type="number" class="form-control" id="nodes_positive" min="0" value="0">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="er_status">ER Status</label>
+                                    <select class="form-control" id="er_status">
+                                        <option value="positive">Positive</option>
+                                        <option value="negative">Negative</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="her2_status">HER2 Status</label>
+                                    <select class="form-control" id="her2_status">
+                                        <option value="negative">Negative</option>
+                                        <option value="positive">Positive</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="menopausal_status">Menopausal Status</label>
+                                    <select class="form-control" id="menopausal_status">
+                                        <option value="pre">Pre-menopausal</option>
+                                        <option value="post">Post-menopausal</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="text-center mt-3">
+                                <button type="submit" class="btn btn-primary">Create Digital Twin</button>
+                                <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            
+            // Insert the form
+            const existingForm = document.getElementById('patientFormContainer');
+            if (existingForm) {
+                existingForm.innerHTML = formHTML;
+            } else {
+                const formContainer = document.createElement('div');
+                formContainer.id = 'patientFormContainer';
+                formContainer.innerHTML = formHTML;
+                contentArea.appendChild(formContainer);
+            }
+            
+            // Add form handlers
+            document.getElementById('newPatientForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Collect patient data
+                const patient = {
+                    patientID: document.getElementById('patientID').value,
+                    age: parseInt(document.getElementById('age').value),
+                    tumor_size: parseFloat(document.getElementById('tumor_size').value),
+                    grade: parseInt(document.getElementById('grade').value),
+                    nodes_positive: parseInt(document.getElementById('nodes_positive').value),
+                    er_status: document.getElementById('er_status').value,
+                    her2_status: document.getElementById('her2_status').value,
+                    menopausal_status: document.getElementById('menopausal_status').value
+                };
+                
+                // Save and show result
+                if (savePatient(patient)) {
+                    alert('Patient created successfully!');
+                    document.getElementById('patientFormContainer').remove();
+                    updateCounters();
+                    
+                    // Switch back to dashboard tab
+                    const dashTab = document.querySelector('a[href="#Dashboard"]');
+                    if (dashTab) dashTab.click();
+                }
+            });
+            
+            // Cancel button handler
+            document.getElementById('cancelBtn').addEventListener('click', function() {
+                document.getElementById('patientFormContainer').remove();
+            });
+        }
+        
+        // // 4. Add sample data function
+        // function addSampleData() {
+        //     const samplePatients = [
+        //         {
+        //             patientID: "PT001",
+        //             age: 45,
+        //             tumor_size: 15,
+        //             grade: 2,
+        //             nodes_positive: 0,
+        //             er_status: "positive",
+        //             her2_status: "negative",
+        //             menopausal_status: "pre"
+        //         },
+        //         {
+        //             patientID: "PT002",
+        //             age: 67,
+        //             tumor_size: 28,
+        //             grade: 3,
+        //             nodes_positive: 2,
+        //             er_status: "positive",
+        //             her2_status: "positive",
+        //             menopausal_status: "post"
+        //         },
+        //         {
+        //             patientID: "PT003",
+        //             age: 52,
+        //             tumor_size: 12,
+        //             grade: 1,
+        //             nodes_positive: 0,
+        //             er_status: "positive",
+        //             her2_status: "negative",
+        //             menopausal_status: "post"
+        //         }
+        //     ];
+            
+        //     let added = 0;
+        //     samplePatients.forEach(patient => {
+        //         if (savePatient(patient)) added++;
+        //     });
+            
+        //     if (added > 0) {
+        //         alert(`Added ${added} sample patients!`);
+        //         updateCounters();
+        //         return true;
+        //     }
+        //     return false;
+        // }
+        
+        // 5. Set up event listeners for navigation
+        function setupEventListeners() {
+            // Create New Patient button
+            const createPatientBtn = document.querySelector('a[href*="Create New Patient"]');
+            if (createPatientBtn) {
+                createPatientBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showCreatePatientForm();
+                });
+            }
+            
+            // Add a Sample Data button directly to the page
+            const header = document.querySelector('.container-fluid h1') || 
+                         document.querySelector('.patient-overview') ||
+                         document.querySelector('h1');
+                         
+            if (header) {
+                const sampleBtn = document.createElement('button');
+                sampleBtn.className = 'btn btn-sm btn-secondary ml-3';
+                sampleBtn.innerText = 'Add Sample Data';
+                sampleBtn.style.marginLeft = '15px';
+                sampleBtn.addEventListener('click', addSampleData);
+                
+                header.parentNode.insertBefore(sampleBtn, header.nextSibling);
+            }
+            
+            // Non-functional placeholders for other nav items
+            document.querySelectorAll('a[href]').forEach(link => {
+                if (!link.getAttribute('href').startsWith('#') && 
+                    !link.getAttribute('href').includes('Create New Patient')) {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const feature = link.textContent.trim();
+                        alert(`The ${feature} feature will be implemented soon!`);
+                    });
+                }
+            });
+        }
+        
+        // Run initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize
+            updateCounters();
+            setupEventListeners();
+            
+            // Add demo button to header
+            
+        });
+    })();
+    </script>
+</body>
+</html>

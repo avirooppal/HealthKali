@@ -1,0 +1,165 @@
+/* Basic styles for the Cancer Digital Twin dashboard */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* Header styles */
+header {
+    background-color: #f8f9fa;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+}
+
+.logo span {
+    color: #0ea5e9;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-links a {
+    margin-left: 1.5rem;
+    color: #555;
+    text-decoration: none;
+}
+
+.nav-links a:hover, .nav-links a.active {
+    color: #0ea5e9;
+}
+
+/* Main dashboard container */
+.dashboard-container {
+    display: flex;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #f8f9fa;
+    height: calc(100vh - 60px);
+    border-right: 1px solid #ddd;
+    padding: 1rem 0;
+    overflow-y: auto;
+}
+
+.sidebar h3 {
+    padding: 0 1.5rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 0.5rem;
+}
+
+.sidebar a {
+    display: block;
+    padding: 0.7rem 1.5rem;
+    color: #333;
+    text-decoration: none;
+}
+
+.sidebar a:hover {
+    background-color: #e9ecef;
+}
+
+.sidebar a.active {
+    background-color: #e0f2fe;
+    color: #0ea5e9;
+    border-left: 3px solid #0ea5e9;
+    padding-left: calc(1.5rem - 3px);
+}
+
+.main-content {
+    flex: 1;
+    padding: 1.5rem;
+    background-color: #f5f7f9;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+}
+
+.content-section {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.section-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #2563eb;
+}
+
+/* Form styles */
+input, select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+button {
+    background-color: #0ea5e9;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0284c7;
+}
+
+/* Card styles */
+.patient-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+}
+
+.risk-level {
+    display: inline-block;
+    padding: 0.3rem 1rem;
+    border-radius: 9999px;
+    font-weight: 500;
+}
+
+.risk-level.low {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.risk-level.medium {
+    background-color: #fef9c3;
+    color: #854d0e;
+}
+
+.risk-level.high {
+    background-color: #fee2e2;
+    color: #b91c1c;
+} 

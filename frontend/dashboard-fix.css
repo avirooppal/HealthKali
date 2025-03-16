@@ -1,0 +1,44 @@
+/* Fix for the dashboard elements */
+.card {
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.card h1, .card h3 {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* Add some spacing */
+.tab-content {
+    padding-top: 20px;
+}
+
+/* Fix for the navigation */
+a {
+    cursor: pointer;
+}
+
+/* Add spinner animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top-color: #007bff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+/* Make the UI more responsive */
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 15px;
+    }
+} 

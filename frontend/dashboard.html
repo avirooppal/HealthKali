@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancer Digital Twin Dashboard</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <link href="/frontend/dashboard-styles.css" rel="stylesheet">
+    
+    <!-- Three.js for 3D visualizations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
+    
+    <!-- Chart.js for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <header class="bg-dark text-white p-3 mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-0">Cancer Digital Twin Platform</h1>
+                <div>
+                    <a href="/frontend/index.html" class="btn btn-outline-light btn-sm me-2">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <!-- <button class="btn btn-outline-light btn-sm me-2">
+                        <i class="fas fa-question-circle"></i> Help
+                    </button>
+                    <button class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-cog"></i> Settings
+                    </button> -->
+                </div>
+            </div>
+        </header>
+        
+        <div class="dashboard-container">
+            <!-- Sidebar Navigation -->
+            <div class="sidebar">
+                        <h3>Patient Data</h3>
+                <a href="#" class="active" data-section="patient-profile"><i class="fas fa-user"></i> Profile</a>
+                <a href="#" data-section="health-history"><i class="fas fa-notes-medical"></i> History</a>
+                
+                        <h3>Analysis</h3>
+                <a href="#" data-section="risk-assessment"><i class="fas fa-chart-line"></i> Risk Assessment</a>
+                <a href="#" data-section="prediction"><i class="fas fa-chart-pie"></i> Prediction</a>
+                
+                        <h3>Simulations</h3>
+                <a href="#" data-section="disease-course"><i class="fas fa-project-diagram"></i> Disease Course</a>
+                <a href="#" data-section="treatment-scenarios"><i class="fas fa-vial"></i> Treatment Scenarios</a>
+                <a href="#" data-section="molecular-subtypes"><i class="fas fa-dna"></i> Molecular Subtypes</a>
+                
+                        <h3>Reports</h3>
+                <a href="#" data-section="summary-report"><i class="fas fa-file-medical-alt"></i> Summary Report</a>
+                <a href="#" data-section="export-data"><i class="fas fa-file-export"></i> Export Data</a>
+                
+                <h3>Management</h3>
+                <a href="#" data-section="create-patient"><i class="fas fa-user-plus"></i> Create New Patient</a>
+            </div>
+            
+            <!-- Main Content Area -->
+            <div class="main-content">
+                <!-- Update the top navigation in your dashboard.html -->
+                <ul class="nav nav-tabs mb-4">
+                  <!-- <li class="nav-item">
+                    <a class="nav-link" href="/frontend/index.html" onclick="window.location.href='/frontend/index.html'; return false;">
+                      <i class="fas fa-home"></i> Home
+                    </a>
+                  </li> -->
+                  <li class="nav-item">
+                    <a class="nav-link active" id="dashboard-tab" data-toggle="tab" href="#dashboard-content">Dashboard</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="patients-tab" data-toggle="tab" href="#patients-content">Patients</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="demo-tab" data-toggle="tab" href="#demo-content">3D Demo</a>
+                  </li>
+                </ul>
+
+                <div class="tab-content">
+                  <!-- Dashboard Tab -->
+                  <div class="tab-pane fade show active" id="dashboard-content">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="card">
+                          <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Patient Overview</h5>
+                          </div>
+                          <div class="card-body">
+                            <div class="row">
+                              <div class="col-md-3">
+                                <div class="card text-center">
+                                  <div class="card-body">
+                                    <h1 id="totalPatients">0</h1>
+                                    <p>Total Patients</p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-md-3">
+                                <div class="card text-center">
+                                  <div class="card-body">
+                                    <h1 id="highRiskCount">0</h1>
+                                    <p>High Risk</p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-md-3">
+                                <div class="card text-center">
+                                  <div class="card-body">
+                                    <h1 id="mediumRiskCount">0</h1>
+                                    <p>Medium Risk</p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-md-3">
+                                <div class="card text-center">
+                                  <div class="card-body">
+                                    <h1 id="lowRiskCount">0</h1>
+                                    <p>Low Risk</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                              <h5>Recent Patients</h5>
+                              <table class="table table-striped" id="recentPatientsTable">
+                                <thead>
+                                  <tr>
+                                    <th>ID</th>
+                                    <th>Age</th>
+                                    <th>Tumor Size</th>
+                                    <th>Grade</th>
+                                    <th>Risk</th>
+                                    <th>Actions</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <!-- Will be populated by JavaScript -->
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Patients Tab -->
+                  <div class="tab-pane fade" id="patients-content">
+                    <!-- Your existing create patient form goes here -->
+                    <div class="card">
+                      <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Create New Patient</h5>
+                      </div>
+                      <div class="card-body">
+                        <!-- Your existing patient form here, but we'll update the form submission -->
+                        <form id="patientForm">
+                          <div class="form-group">
+                            <label for="patientID">Patient ID</label>
+                            <input type="text" class="form-control" id="patientID" name="patientID" required>
+                          </div>
+                          
+                          <div class="form-group">
+                            <label for="age">Age</label>
+                            <input type="number" class="form-control" id="age" name="age" required>
+                          </div>
+                          
+                          <div class="form-group">
+                            <label for="tumor_size">Tumor Size (mm)</label>
+                            <input type="number" class="form-control" id="tumor_size" name="tumor_size" required>
+                          </div>
+                          
+                          <div class="form-group">
+                            <label for="grade">Tumor Grade</label>
+                            <select class="form-control" id="grade" name="grade" required>
+                              <option value="1">Grade 1 (Well-differentiated)</option>
+                              <option value="2">Grade 2 (Moderately-differentiated)</option>
+                              <option value="3">Grade 3 (Poorly-differentiated)</option>
+                            </select>
+                          </div>
+                          
+                          <div class="form-group">
+                            <label for="nodes_positive">Positive Lymph Nodes</label>
+                            <input type="number" class="form-control" id="nodes_positive" name="nodes_positive" value="0" required>
+                          </div>
+                          
+                          <div class="form-group">
+                            <label for="er_status">ER Status</label>
+                            <select class="form-control" id="er_status" name="er_status" required>
+                              <option value="positive">Positive</option>
+                              <option value="negative">Negative</option>
+                            </select>
+                          </div>
+                          
+                          <div class="form-group">
+                            <label for="her2_status">HER2 Status</label>
+                            <select class="form-control" id="her2_status" name="her2_status" required>
+                              <option value="negative">Negative</option>
+                              <option value="positive">Positive</option>
+                            </select>
+                          </div>
+                          
+                          <div class="form-group">
+                            <label for="menopausal_status">Menopausal Status</label>
+                            <select class="form-control" id="menopausal_status" name="menopausal_status">
+                              <option value="pre">Pre-menopausal</option>
+                              <option value="post">Post-menopausal</option>
+                            </select>
+                          </div>
+                          
+                          <button type="submit" class="btn btn-primary" id="createTwinBtn">Create Digital Twin</button>
+                        </form>
+                      </div>
+                    </div>
+                    
+                    <!-- Patient Results Section -->
+                    <div id="patientResults" style="display: none; margin-top: 2rem;">
+                      <!-- Detailed results will go here -->
+                    </div>
+                  </div>
+                  
+                  <!-- 3D Demo Tab -->
+                  <div class="tab-pane fade" id="demo-content">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <!-- 3D Body Model -->
+                        <div class="card">
+                          <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Interactive Body Model</h5>
+                          </div>
+                          <div class="card-body" style="height: 400px;">
+                            <div id="bodyModelContainer" style="width: 100%; height: 100%;"></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <!-- Simulation Parameters -->
+                        <div class="card">
+                          <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Simulation Parameters</h5>
+                          </div>
+                          <div class="card-body">
+                            <form id="simulationForm">
+                              <div class="form-group">
+                                <label for="tumorLocation">Tumor Location</label>
+                                <select class="form-control" id="tumorLocation">
+                                  <option>Right Breast (Upper Outer)</option>
+                                  <option>Right Breast (Upper Inner)</option>
+                                  <option>Right Breast (Lower Outer)</option>
+                                  <option>Right Breast (Lower Inner)</option>
+                                  <option>Left Breast (Upper Outer)</option>
+                                  <option>Left Breast (Upper Inner)</option>
+                                  <option>Left Breast (Lower Outer)</option>
+                                  <option>Left Breast (Lower Inner)</option>
+                                </select>
+                              </div>
+                              
+                              <div class="form-group">
+                                <label for="tumorSizeSlider">Tumor Size</label>
+                                <input type="range" class="form-control-range" id="tumorSizeSlider" min="5" max="50" value="15">
+                                <div class="d-flex justify-content-between">
+                                  <small>5mm</small>
+                                  <small id="tumorSizeValue">15mm</small>
+                                  <small>50mm</small>
+                                </div>
+                              </div>
+                              
+                              <div class="form-group">
+                                <label for="tumorGrade">Tumor Grade</label>
+                                <select class="form-control" id="tumorGrade">
+                                  <option>Grade 1 (Well-differentiated)</option>
+                                  <option selected>Grade 2 (Moderately-differentiated)</option>
+                                  <option>Grade 3 (Poorly-differentiated)</option>
+                                </select>
+                              </div>
+                              
+                              <button type="button" class="btn btn-primary" id="runSimulation">Run Simulation</button>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!-- Simulation Results (hidden initially) -->
+                    <div class="row mt-4" id="simulationResults" style="display: none;">
+                      <div class="col-12">
+                        <div class="card">
+                          <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">Simulation Results</h5>
+                          </div>
+                          <div class="card-body">
+                            <div class="row">
+                              <div class="col-md-8">
+                                <div id="growthChart" style="height: 300px;"></div>
+                              </div>
+                              <div class="col-md-4">
+                                <div class="simulation-metrics">
+                                  <h6>Tumor Characteristics</h6>
+                                  <ul class="list-group">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                      Doubling Time
+                                      <span class="badge badge-primary badge-pill" id="doublingTime">120 days</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                      Growth Rate
+                                      <span class="badge badge-primary badge-pill" id="growthRate">0.3 mm/month</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                      Recurrence Risk
+                                      <span class="badge badge-warning badge-pill" id="recurrenceRisk">25%</span>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="/frontend/patient-database.js"></script>
+    <script src="/frontend/enhanced-results.js"></script>
+    <script src="/frontend/simple-body-model.js"></script>
+    <script src="/frontend/dashboard.js"></script>
+    <script src="/frontend/three-model.js"></script>
+    <script>
+    // Add this at the top of your existing script
+    document.addEventListener('DOMContentLoaded', function() {
+        // Fix home link navigation
+        const homeLinks = document.querySelectorAll('a[href="/frontend/index.html"]');
+        homeLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Don't prevent default here - allow normal navigation
+                window.location.href = '/frontend/index.html';
+            });
+        });
+        
+        // 1. Connect sidebar with tabs
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Handle special case for Create New Patient
+                if (link.getAttribute('data-section') === 'create-patient') {
+                    // Switch to the patients tab
+                    document.getElementById('patients-tab').click();
+                    
+                    // Make sure the patient form is visible
+                    document.getElementById('patientForm').scrollIntoView();
+                    return;
+                }
+                
+                // For other links, just show placeholder message for now
+                if (!link.classList.contains('active')) {
+                    const featureName = link.textContent.trim();
+                    alert(`The ${featureName} feature will be implemented soon!`);
+                }
+            });
+        });
+        
+        // 2. Fix tab switching
+        document.querySelectorAll('.nav-tabs .nav-link').forEach(tabLink => {
+            tabLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all tabs
+                document.querySelectorAll('.nav-tabs .nav-link').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Hide all tab content
+                document.querySelectorAll('.tab-pane').forEach(pane => {
+                    pane.classList.remove('show', 'active');
+                });
+                
+                // Show corresponding tab content
+                const target = this.getAttribute('href');
+                document.querySelector(target).classList.add('show', 'active');
+            });
+        });
+        
+        // 3. Make the patient form submission work
+        const patientForm = document.getElementById('patientForm');
+        if (patientForm) {
+            patientForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Collect form data
+                const formData = new FormData(patientForm);
+                const patientData = {};
+                formData.forEach((value, key) => {
+                    patientData[key] = value;
+                });
+                
+                // Add risk score calculation
+                patientData.riskScore = calculateRiskScore(patientData);
+                patientData.dateAdded = new Date().toISOString();
+                
+                // Save to localStorage
+                savePatient(patientData);
+                
+                // Show success message
+                alert('Patient digital twin created successfully!');
+                
+                // Update dashboard counters
+                updateDashboardCounters();
+                
+                // Switch to dashboard tab
+                document.getElementById('dashboard-tab').click();
+                
+                // Reset form
+                patientForm.reset();
+            });
+        }
+        
+        // 4. Add a sample data button
+        const cardHeader = document.querySelector('.card-header');
+        if (cardHeader) {
+            const sampleBtn = document.createElement('button');
+            sampleBtn.className = 'btn btn-secondary btn-sm float-end';
+            sampleBtn.textContent = 'Add Sample Data';
+            sampleBtn.addEventListener('click', addSampleData);
+            cardHeader.appendChild(sampleBtn);
+        }
+        
+        // Initialize dashboard
+        updateDashboardCounters();
+        
+        // Helper functions
+        function calculateRiskScore(patientData) {
+            const tumorSize = parseFloat(patientData.tumor_size || 0);
+            const grade = parseInt(patientData.grade || 1);
+            const nodesPositive = parseInt(patientData.nodes_positive || 0);
+            
+            let riskScore = (tumorSize * 0.004 + grade * 0.05 + nodesPositive * 0.03);
+            
+            if (patientData.er_status === 'negative') riskScore += 0.1;
+            if (patientData.her2_status === 'positive') riskScore += 0.05;
+            
+            return Math.max(0.1, Math.min(0.9, riskScore));
+        }
+        
+        function savePatient(patient) {
+            const STORAGE_KEY = 'cancerDigitalTwinPatients';
+            let patients = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            
+            // Make sure ID is unique
+            if (patients.some(p => p.patientID === patient.patientID)) {
+                const timestamp = new Date().getTime();
+                patient.patientID = `${patient.patientID}-${timestamp}`;
+            }
+            
+            patients.push(patient);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(patients));
+            return patient;
+        }
+        
+        function getAllPatients() {
+            const STORAGE_KEY = 'cancerDigitalTwinPatients';
+            return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        }
+        
+        function getPatient(patientID) {
+            const patients = getAllPatients();
+            return patients.find(p => p.patientID === patientID);
+        }
+        
+        function updateDashboardCounters() {
+            const patients = getAllPatients();
+            
+            // Update counts
+            document.getElementById('totalPatients').textContent = patients.length;
+            document.getElementById('highRiskCount').textContent = 
+                patients.filter(p => p.riskScore > 0.6).length;
+            document.getElementById('mediumRiskCount').textContent = 
+                patients.filter(p => p.riskScore > 0.3 && p.riskScore <= 0.6).length;
+            document.getElementById('lowRiskCount').textContent = 
+                patients.filter(p => p.riskScore <= 0.3).length;
+            
+            // Update recent patients table
+            updateRecentPatientsTable(patients);
+        }
+        
+        function updateRecentPatientsTable(patients) {
+            const tbody = document.querySelector('#recentPatientsTable tbody');
+            if (!tbody) return;
+            
+            // Clear existing rows
+            tbody.innerHTML = '';
+            
+            // Sort by date added (newest first)
+            patients.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
+            
+            // Take top 5 most recent
+            const recentPatients = patients.slice(0, 5);
+            
+            // Add rows
+            recentPatients.forEach(patient => {
+                const row = document.createElement('tr');
+                
+                // Determine risk class
+                let riskClass = 'text-success';
+                let riskLabel = 'Low';
+                
+                if (patient.riskScore > 0.6) {
+                    riskClass = 'text-danger';
+                    riskLabel = 'High';
+                } else if (patient.riskScore > 0.3) {
+                    riskClass = 'text-warning';
+                    riskLabel = 'Medium';
+                }
+                
+                row.innerHTML = `
+                    <td>${patient.patientID}</td>
+                    <td>${patient.age}</td>
+                    <td>${patient.tumor_size} mm</td>
+                    <td>${patient.grade}</td>
+                    <td class="${riskClass}">${riskLabel}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary view-patient" data-id="${patient.patientID}">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            // Add event listeners to view buttons
+            document.querySelectorAll('.view-patient').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const patientID = this.getAttribute('data-id');
+                    const patient = getPatient(patientID);
+                    if (patient) {
+                        showPatientDetails(patient);
+                    }
+                });
+            });
+        }
+        
+        // Enhanced patient details view
+        function showPatientDetails(patient) {
+            // Switch to patients tab
+            document.getElementById('patients-tab').click();
+            
+            // Hide the patient form
+            const formSection = document.querySelector('#patients-content .card');
+            if (formSection) {
+                formSection.style.display = 'none';
+            }
+            
+            // Show patient results section
+            const resultsSection = document.getElementById('patientResults');
+            if (resultsSection) {
+                resultsSection.style.display = 'block';
+                
+                // Calculate survival probabilities
+                const survival5yr = (1 - patient.riskScore) * 100;
+                const recurrenceRisk = patient.riskScore * 100;
+                const diseaseFree5yr = (1 - patient.riskScore * 0.9) * 100;
+                
+                // Determine appropriate treatment based on patient characteristics
+                let surgeryRec, radiationRec, chemoRec, hormonalRec, targetedRec;
+                
+                // Surgery recommendations
+                if (parseFloat(patient.tumor_size) <= 20) {
+                    surgeryRec = 'Breast Conserving Surgery (Lumpectomy)';
+                } else {
+                    surgeryRec = 'Mastectomy with consideration for reconstruction';
+                }
+                
+                // Radiation therapy
+                if (parseFloat(patient.tumor_size) <= 20) {
+                    radiationRec = 'Whole breast radiation following lumpectomy';
+                } else {
+                    radiationRec = 'Post-mastectomy radiation if high risk features present';
+                }
+                
+                // Chemotherapy
+                if (parseInt(patient.grade) >= 3 || parseInt(patient.nodes_positive) > 0 || parseFloat(patient.tumor_size) > 20 || patient.er_status === 'negative') {
+                    chemoRec = 'Adjuvant chemotherapy recommended';
+                } else {
+                    chemoRec = 'Chemotherapy may be omitted (consider genomic testing)';
+                }
+                
+                // Hormonal therapy
+                if (patient.er_status === 'positive') {
+                    if (patient.menopausal_status === 'pre') {
+                        hormonalRec = 'Tamoxifen for 5-10 years';
+                    } else {
+                        hormonalRec = 'Aromatase inhibitor for 5-10 years';
+                    }
+                } else {
+                    hormonalRec = 'No hormonal therapy indicated (ER-negative)';
+                }
+                
+                // Targeted therapy
+                if (patient.her2_status === 'positive') {
+                    targetedRec = 'Trastuzumab (Herceptin) for 1 year';
+                } else {
+                    targetedRec = 'No HER2-targeted therapy indicated';
+                }
+                
+                // Generate HTML for patient details
+                const detailsHTML = `
+                    <div class="patient-detail-container">
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header bg-primary text-white d-flex justify-content-between">
+                                        <h5 class="mb-0">Digital Twin: ${patient.patientID}</h5>
+                                        <button class="btn btn-sm btn-outline-light back-to-form">
+                                            <i class="fas fa-arrow-left"></i> Back
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h5>Patient Information</h5>
+                                                <table class="table table-bordered">
+                                                    <tbody>
+                                                        <tr>
+                                                            <th>Patient ID</th>
+                                                            <td>${patient.patientID}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Age</th>
+                                                            <td>${patient.age}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Tumor Size</th>
+                                                            <td>${patient.tumor_size} mm</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Grade</th>
+                                                            <td>${patient.grade}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Positive Lymph Nodes</th>
+                                                            <td>${patient.nodes_positive}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>ER Status</th>
+                                                            <td>${patient.er_status}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>HER2 Status</th>
+                                                            <td>${patient.her2_status}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Menopausal Status</th>
+                                                            <td>${patient.menopausal_status}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h5>Risk Assessment</h5>
+                                                <div class="risk-gauge-container text-center mb-3">
+                                                    <div class="risk-gauge">
+                                                        <div class="risk-score">${patient.riskScore.toFixed(2)}</div>
+                                                        <div class="risk-label">Risk Score</div>
+                                                    </div>
+                                                </div>
+                                                <div class="risk-metrics">
+                                                    <div class="row text-center">
+                                                        <div class="col-md-4">
+                                                            <div class="metric">
+                                                                <div class="metric-value">${survival5yr.toFixed(1)}%</div>
+                                                                <div class="metric-label">5-Year Survival</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="metric">
+                                                                <div class="metric-value">${recurrenceRisk.toFixed(1)}%</div>
+                                                                <div class="metric-label">Recurrence Risk</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="metric">
+                                                                <div class="metric-value">${diseaseFree5yr.toFixed(1)}%</div>
+                                                                <div class="metric-label">Disease-Free Survival</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <hr>
+                                        
+                                        <div class="row mt-4">
+                                            <div class="col-12">
+                                                <h5>Treatment Recommendations</h5>
+                                                <div class="treatment-recommendations">
+                                                    <div class="row">
+                                                        <div class="col-md-4 mb-3">
+                                                            <div class="treatment-card">
+                                                                <h6><i class="fas fa-procedures"></i> Surgery</h6>
+                                                                <p>${surgeryRec}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 mb-3">
+                                                            <div class="treatment-card">
+                                                                <h6><i class="fas fa-radiation"></i> Radiation</h6>
+                                                                <p>${radiationRec}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 mb-3">
+                                                            <div class="treatment-card">
+                                                                <h6><i class="fas fa-syringe"></i> Chemotherapy</h6>
+                                                                <p>${chemoRec}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <div class="treatment-card">
+                                                                <h6><i class="fas fa-pills"></i> Hormonal Therapy</h6>
+                                                                <p>${hormonalRec}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <div class="treatment-card">
+                                                                <h6><i class="fas fa-dna"></i> Targeted Therapy</h6>
+                                                                <p>${targetedRec}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mt-4">
+                                            <div class="col-12">
+                                                <h5>Disease Progression</h5>
+                                                <div class="disease-progression">
+                                                    <div class="text-center mb-3">
+                                                        <div id="progressionChart" style="height: 300px; width: 100%;">
+                                                            <!-- Chart will be rendered here -->
+                                                        </div>
+                                                    </div>
+                                                    <div class="progression-metrics">
+                                                        <div class="row">
+                                                            <div class="col-md-3 mb-2">
+                                                                <div class="metric-card">
+                                                                    <h6>Tumor Doubling Time</h6>
+                                                                    <p>${calculateDoublingTime(patient)} days</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3 mb-2">
+                                                                <div class="metric-card">
+                                                                    <h6>Growth Rate</h6>
+                                                                    <p>${calculateGrowthRate(patient)} mm/month</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3 mb-2">
+                                                                <div class="metric-card">
+                                                                    <h6>Metastasis Risk</h6>
+                                                                    <p>${(patient.riskScore * 100).toFixed(1)}%</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3 mb-2">
+                                                                <div class="metric-card">
+                                                                    <h6>Treatment Benefit</h6>
+                                                                    <p>${calculateTreatmentBenefit(patient)}%</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mt-4">
+                                            <div class="col-12 text-center">
+                                                <button class="btn btn-primary" id="runSimulationBtn">Run Advanced Simulation</button>
+                                                <button class="btn btn-secondary ml-2" id="exportReportBtn">Export Report</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Update the results section
+                resultsSection.innerHTML = detailsHTML;
+                
+                // Add back button functionality
+                const backButton = resultsSection.querySelector('.back-to-form');
+                if (backButton) {
+                    backButton.addEventListener('click', function() {
+                        // Hide results
+                        resultsSection.style.display = 'none';
+                        // Show form
+                        if (formSection) {
+                            formSection.style.display = 'block';
+                        }
+                    });
+                }
+                
+                // Add placeholder functionality for buttons
+                const simulationBtn = document.getElementById('runSimulationBtn');
+                const exportBtn = document.getElementById('exportReportBtn');
+                
+                if (simulationBtn) {
+                    simulationBtn.addEventListener('click', function() {
+                        alert('Advanced simulation will be implemented soon!');
+                    });
+                }
+                
+                if (exportBtn) {
+                    exportBtn.addEventListener('click', function() {
+                        alert('Report export will be implemented soon!');
+                    });
+                }
+                
+                // Render the progression chart
+                renderProgressionChart(patient);
+            }
+        }
+        
+        // Helper function to calculate tumor doubling time
+        function calculateDoublingTime(patient) {
+            // Simplified calculation - in reality would be more complex
+            const grade = parseInt(patient.grade);
+            let baseDoublingTime = 150; // days
+            
+            if (grade === 2) baseDoublingTime = 120;
+            if (grade === 3) baseDoublingTime = 90;
+            
+            if (patient.er_status === 'negative') baseDoublingTime *= 0.8;
+            if (patient.her2_status === 'positive') baseDoublingTime *= 0.7;
+            
+            return Math.round(baseDoublingTime);
+        }
+        
+        // Helper function to calculate growth rate
+        function calculateGrowthRate(patient) {
+            const doublingTime = calculateDoublingTime(patient);
+            const tumorSize = parseFloat(patient.tumor_size);
+            
+            // Simplified calculation
+            const growthRate = (tumorSize * 0.693 * 30) / doublingTime;
+            return growthRate.toFixed(2);
+        }
+        
+        // Helper function to calculate treatment benefit
+        function calculateTreatmentBenefit(patient) {
+            // Assume treatment reduces recurrence risk by a percentage
+            // that depends on tumor characteristics
+            let benefit = 30; // Base benefit percentage
+            
+            if (parseInt(patient.grade) === 3) benefit += 10;
+            if (parseInt(patient.nodes_positive) > 0) benefit += 15;
+            if (patient.er_status === 'positive') benefit += 20;
+            if (patient.her2_status === 'positive') benefit += 15;
+            
+            return Math.min(90, benefit); // Cap at 90%
+        }
+        
+        // Render progression chart
+        function renderProgressionChart(patient) {
+            const chartContainer = document.getElementById('progressionChart');
+            if (!chartContainer) return;
+            
+            // Create canvas for chart
+            const canvas = document.createElement('canvas');
+            canvas.id = 'progressionCanvas';
+            chartContainer.appendChild(canvas);
+            
+            // Get simulated progression data
+            const tumorSize = parseFloat(patient.tumor_size);
+            const months = [0, 3, 6, 9, 12, 15, 18, 21, 24];
+            
+            // Generate two datasets - with and without treatment
+            const withoutTreatment = simulateProgression(patient, months, false);
+            const withTreatment = simulateProgression(patient, months, true);
+            
+            // Create chart
+            const ctx = canvas.getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [
+                        {
+                            label: 'Without Treatment',
+                            data: withoutTreatment,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderWidth: 2,
+                            fill: true
+                        },
+                        {
+                            label: 'With Treatment',
+                            data: withTreatment,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderWidth: 2,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Tumor Growth Simulation'
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Months'
+                            }
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Tumor Size (mm)'
+                            },
+                            min: 0
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Simulate disease progression
+        function simulateProgression(patient, months, includesTreatment) {
+            const initialSize = parseFloat(patient.tumor_size);
+            const grade = parseInt(patient.grade);
+            const growthRate = calculateGrowthRate(patient) / 30; // daily growth rate
+            
+            // Simplified Gompertz growth model
+            return months.map(month => {
+                if (month === 0) return initialSize;
+                
+                const days = month * 30;
+                const maxSize = 100; // maximum size in mm
+                const growthK = 0.1 + (0.05 * grade); // growth constant
+                
+                // If treatment is included, apply treatment effect after first 3 months
+                const treatmentEffect = (includesTreatment && month >= 3) ? 0.8 : 0;
+                const adjustedGrowthK = growthK * (1 - treatmentEffect);
+                
+                // Gompertz formula
+                const size = maxSize * Math.exp(
+                    -Math.exp(1 - (adjustedGrowthK * days * (1 - Math.log(initialSize) / Math.log(maxSize))))
+                );
+                
+                // Cap size and round to 1 decimal place
+                return Math.min(maxSize, Math.max(0, Math.round(size * 10) / 10));
+            });
+        }
+        
+        function addSampleData() {
+            const samplePatients = [
+                {
+                    patientID: "PT001",
+                    age: 45,
+                    tumor_size: 15,
+                    grade: 2,
+                    nodes_positive: 0,
+                    er_status: "positive",
+                    her2_status: "negative",
+                    menopausal_status: "pre"
+                },
+                {
+                    patientID: "PT002",
+                    age: 67,
+                    tumor_size: 28,
+                    grade: 3,
+                    nodes_positive: 2,
+                    er_status: "positive",
+                    her2_status: "positive",
+                    menopausal_status: "post"
+                },
+                {
+                    patientID: "PT003",
+                    age: 52,
+                    tumor_size: 12,
+                    grade: 1,
+                    nodes_positive: 0,
+                    er_status: "positive",
+                    her2_status: "negative",
+                    menopausal_status: "post"
+                }
+            ];
+            
+            samplePatients.forEach(patient => {
+                patient.riskScore = calculateRiskScore(patient);
+                patient.dateAdded = new Date().toISOString();
+                savePatient(patient);
+            });
+            
+            alert('Sample patients added successfully!');
+            updateDashboardCounters();
+        }
+    });
+    </script>
+</body>
+</html>

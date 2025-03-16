@@ -1,0 +1,24 @@
+2025-03-15 13:23:29,905 - root - INFO - Logging initialized: logs\cancer_twin.log
+2025-03-15 13:23:29,905 - CancerDigitalTwin - INFO - Cancer Digital Twin initialized
+2025-03-15 13:23:29,905 - CancerDigitalTwin - INFO - Creating digital twin for patient
+2025-03-15 13:23:29,909 - CancerDigitalTwin - ERROR - Error creating digital twin: calculate_baseline_risk() missing 6 required positional arguments: 'tumor_size_cm', 'lymph_nodes_positive', 'grade', 'er_status', 'pr_status', and 'her2_status'
+2025-03-15 13:25:05,928 - root - INFO - Logging initialized: logs\cancer_twin.log
+2025-03-15 13:25:05,928 - CancerDigitalTwin - INFO - Cancer Digital Twin initialized
+2025-03-15 13:25:05,943 - CancerDigitalTwin - INFO - Creating digital twin for patient
+2025-03-15 13:25:05,946 - CancerDigitalTwin - ERROR - Error creating digital twin: list indices must be integers or slices, not str
+2025-03-15 13:27:03,526 - root - INFO - Logging initialized: logs\cancer_twin.log
+2025-03-15 13:27:03,526 - CancerDigitalTwin - INFO - Cancer Digital Twin initialized
+2025-03-15 13:27:03,526 - CancerDigitalTwin - INFO - Creating digital twin for patient
+2025-03-15 13:27:03,655 - CancerDigitalTwin - INFO - Digital twin created successfully
+2025-03-15 13:30:40,966 - root - INFO - Logging initialized: logs\cancer_twin.log
+2025-03-15 13:30:40,968 - CancerDigitalTwin - INFO - Cancer Digital Twin initialized
+2025-03-15 13:30:40,970 - CancerDigitalTwin - INFO - Creating digital twin for patient
+2025-03-15 13:30:41,090 - CancerDigitalTwin - INFO - Digital twin created successfully
+2025-03-15 13:39:01,255 - root - INFO - Logging initialized: logs\cancer_twin.log
+2025-03-15 13:39:01,255 - CancerDigitalTwin - INFO - Cancer Digital Twin initialized
+2025-03-15 13:39:01,257 - CancerDigitalTwin - INFO - Creating digital twin for patient
+2025-03-15 13:39:01,257 - CancerDigitalTwin - ERROR - Error creating digital twin: 'ProgressionSimulator' object has no attribute '_apply_standard_treatments'
+2025-03-15 13:47:59,681 - root - INFO - Logging initialized: logs\cancer_twin.log
+2025-03-15 13:47:59,681 - CancerDigitalTwin - INFO - Cancer Digital Twin initialized
+2025-03-15 13:47:59,682 - CancerDigitalTwin - INFO - Creating digital twin for patient
+2025-03-15 13:47:59,782 - CancerDigitalTwin - INFO - Digital twin created successfully

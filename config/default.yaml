@@ -1,0 +1,27 @@
+data:
+  base_path: "data/"
+  tcga_path: "data/tcga_clinical.csv"
+  metabric_path: "data/brca_metabric_clinical_data.tsv"
+  wisconsin_path: "data/wisconsin_breast_cancer.csv"
+  cache_dir: "cache/"
+
+models:
+  weights_dir: "models/weights/"
+  cache_predictions: true
+  prediction_cache_ttl: 3600
+  default_confidence_level: 0.95
+
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/cancer_twin.log"
+
+simulation:
+  default_iterations: 100
+  max_iterations: 1000
+  time_horizon_months: 60
+
+api:
+  host: "localhost"
+  port: 8000
+  debug: true 

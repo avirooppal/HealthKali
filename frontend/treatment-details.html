@@ -1,0 +1,2248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalized Treatment Details - Cancer Digital Twin</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        .treatment-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background-color: white;
+        }
+        
+        .metric-card {
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            margin-bottom: 1rem;
+        }
+        
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0d6efd;
+        }
+        
+        .metric-label {
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        .timeline-container {
+            position: relative;
+            padding: 20px 0;
+        }
+        
+        .timeline-item {
+            padding: 15px;
+            border-left: 3px solid #0d6efd;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 20px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: #0d6efd;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+        }
+        
+        .benefit-icon {
+            color: #198754;
+            margin-right: 8px;
+        }
+        
+        .risk-icon {
+            color: #dc3545;
+            margin-right: 8px;
+        }
+        
+        /* Additional styles for enhanced UI */
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 400px;
+            width: 100%;
+        }
+        .metric-card {
+            background-color: #e9ecef;
+            border: 1px solid #dee2e6;
+        }
+        .timeline-item {
+            background-color: #f8f9fa;
+            border-left: 5px solid #0d6efd;
+        }
+        .timeline-item h5 {
+            color: #0d6efd;
+        }
+        .comparison-table th {
+            background-color: #f1f1f1;
+        }
+        .comparison-table td {
+            background-color: #ffffff;
+        }
+        .comparison-block {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .comparison-block h5 {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .table th {
+            background-color: #f8f9fa;
+        }
+        
+        .severity-high {
+            color: #dc3545;
+        }
+        
+        .severity-medium {
+            color: #ffc107;
+        }
+        
+        .severity-low {
+            color: #28a745;
+        }
+        
+        .accessibility-factor {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+        }
+        
+        .impact-significant { color: #dc3545; }
+        .impact-moderate { color: #ffc107; }
+        .impact-mild { color: #198754; }
+        .impact-minimal { color: #198754; }
+        .impact-variable { color: #0dcaf0; }
+        .impact-temporary-leave { color: #ffc107; }
+        .impact-extended-leave { color: #dc3545; }
+        .impact-flexible-schedule { color: #198754; }
+        .impact-short-term { color: #198754; }
+        .impact-initially-limited { color: #ffc107; }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/frontend/dashboard.html">Cancer Digital Twin</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/frontend/dashboard.html">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Treatment Details</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Personalized Treatment Plan</h2>
+                    <div>
+                        <button class="btn btn-outline-primary me-2" onclick="window.print()">
+                            <i class="fas fa-print"></i> Print Report
+                        </button>
+                        <button class="btn btn-primary" onclick="exportPDF()">
+                            <i class="fas fa-download"></i> Export PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Patient Overview -->
+        <div class="treatment-section">
+            <h4><i class="fas fa-user-circle"></i> Patient Overview</h4>
+            <div class="row mt-3" id="patientOverview">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Add this after the Patient Overview section -->
+        <div class="treatment-section">
+            <h4><i class="fas fa-prescription"></i> Detailed Treatment Recommendations</h4>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        <strong>AI Recommendation Confidence:</strong> <span id="aiConfidence">--</span>
+                        <div class="mt-2" id="missingData"></div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Primary Treatment Plan</h5>
+                            <div id="primaryTreatment">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Decision Factors</h5>
+                            <div id="decisionFactors">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add this before the Treatment Timeline section -->
+        <div class="treatment-section">
+            <h4><i class="fas fa-dna"></i> Treatment Selection Rationale</h4>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Genomic Factors</h5>
+                            <div id="genomicFactors">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Biomarker Analysis</h5>
+                            <div id="biomarkerAnalysis">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Risk Assessment -->
+        <div class="treatment-section">
+            <h4><i class="fas fa-chart-line"></i> Risk Assessment</h4>
+            <div class="row mt-3">
+                <div class="col-md-8 chart-container">
+                    <canvas id="riskChart"></canvas>
+                </div>
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-value" id="overallRisk">--</div>
+                        <div class="metric-label">Overall Risk Score</div>
+                        <p class="text-muted">This score represents the patient's overall risk based on current health metrics and treatment plans.</p>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="survivalRate">--</div>
+                        <div class="metric-label">5-Year Survival Rate</div>
+                        <p class="text-muted">The probability of survival over the next five years with the current treatment plan.</p>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="recurrenceRisk">--</div>
+                        <div class="metric-label">Recurrence Risk</div>
+                        <p class="text-muted">The likelihood of cancer recurrence within five years post-treatment.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Treatment Timeline -->
+        <div class="treatment-section">
+            <h4><i class="fas fa-calendar-alt"></i> Treatment Timeline</h4>
+            <div class="timeline-container mt-3" id="treatmentTimeline">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Treatment Comparisons and Outcomes -->
+        <div class="treatment-section">
+            <h4><i class="fas fa-balance-scale"></i> Treatment Comparisons</h4>
+            
+            <!-- Efficacy Comparison -->
+            <div class="comparison-block mb-4">
+                <h5 class="text-primary"><i class="fas fa-chart-line"></i> Efficacy Comparison</h5>
+                <div class="row">
+                    <div class="col-md-8">
+                        <canvas id="efficacyChart"></canvas>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6>Key Findings</h6>
+                                <ul class="list-unstyled" id="efficacyFindings">
+                                    <!-- Populated by JavaScript -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toxicity Profile -->
+            <div class="comparison-block mb-4">
+                <h5 class="text-primary"><i class="fas fa-exclamation-triangle"></i> Toxicity Profile</h5>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="toxicityTable">
+                                <thead>
+                                    <tr>
+                                        <th>Treatment</th>
+                                        <th>Common Side Effects</th>
+                                        <th>Severity</th>
+                                        <th>Duration</th>
+                                        <th>Management Options</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quality of Life Metrics -->
+            <div class="comparison-block mb-4">
+                <h5 class="text-primary"><i class="fas fa-heart"></i> Quality of Life Impact</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <canvas id="qolRadarChart"></canvas>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="qolTable">
+                                <thead>
+                                    <tr>
+                                        <th>Metric</th>
+                                        <th>Surgery</th>
+                                        <th>Radiation</th>
+                                        <th>Chemotherapy</th>
+                                        <th>Hormonal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cost and Accessibility -->
+            <div class="comparison-block">
+                <h5 class="text-primary"><i class="fas fa-dollar-sign"></i> Cost and Accessibility</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <canvas id="costChart"></canvas>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6>Accessibility Factors</h6>
+                                <div id="accessibilityInfo">
+                                    <!-- Populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Treatment Information -->
+        <div class="row">
+            <!-- Surgery -->
+            <div class="col-md-6 mb-4">
+                <div class="treatment-section">
+                    <h4><i class="fas fa-procedures"></i> Surgery</h4>
+                    <div id="surgeryDetails">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Radiation -->
+            <div class="col-md-6 mb-4">
+                <div class="treatment-section">
+                    <h4><i class="fas fa-radiation"></i> Radiation Therapy</h4>
+                    <div id="radiationDetails">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chemotherapy -->
+            <div class="col-md-6 mb-4">
+                <div class="treatment-section">
+                    <h4><i class="fas fa-syringe"></i> Chemotherapy</h4>
+                    <div id="chemotherapyDetails">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hormonal Therapy -->
+            <div class="col-md-6 mb-4">
+                <div class="treatment-section">
+                    <h4><i class="fas fa-pills"></i> Hormonal Therapy</h4>
+                    <div id="hormonalDetails">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Outcome Predictions -->
+        <div class="treatment-section">
+            <h4><i class="fas fa-chart-bar"></i> Outcome Predictions</h4>
+            <div class="row mt-3">
+                <div class="col-md-6 chart-container">
+                    <canvas id="survivalChart"></canvas>
+                </div>
+                <div class="col-md-6 chart-container">
+                    <canvas id="recurrenceChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add this after the Outcome Predictions section -->
+        <div class="treatment-section">
+            <h4><i class="fas fa-flask"></i> Clinical Trial Opportunities</h4>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="clinicalTrialsTable">
+                            <thead>
+                                <tr>
+                                    <th>Trial ID</th>
+                                    <th>Description</th>
+                                    <th>Phase</th>
+                                    <th>Location</th>
+                                    <th>Match Score</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Add this before the DOMContentLoaded event listener
+        const samplePatientData = {
+            patientID: 'SAMPLE001',
+            age: 45,
+            tumor_size: 25,
+            grade: 2,
+            nodes_positive: 1,
+            er_status: 'positive',
+            riskScore: 0.35
+        };
+
+        // Update the getPatientData function
+        function getPatientData() {
+            const patientId = new URLSearchParams(window.location.search).get('id');
+            const patients = JSON.parse(localStorage.getItem('cancerDigitalTwinPatients') || '[]');
+            const patient = patients.find(p => p.patientID === patientId);
+            return patient || samplePatientData; // Return sample data if no patient found
+        }
+
+        // Add the missing risk calculation functions
+        function calculateRiskMetrics(patient) {
+            // Base risk calculation based on tumor characteristics
+            let baseRisk = 0;
+            
+            // Tumor size contribution (larger tumor = higher risk)
+            if (patient.tumor_size) {
+                baseRisk += (patient.tumor_size / 100) * 0.3;
+            }
+            
+            // Grade contribution
+            if (patient.grade) {
+                baseRisk += ((patient.grade - 1) / 2) * 0.2;
+            }
+            
+            // Lymph node contribution
+            if (patient.nodes_positive !== undefined) {
+                baseRisk += (patient.nodes_positive / 10) * 0.3;
+            }
+            
+            // Hormone receptor status
+            if (patient.er_status === 'negative') {
+                baseRisk += 0.1;
+            }
+            
+            // Normalize risk score between 0 and 1
+            baseRisk = Math.min(Math.max(baseRisk, 0.1), 0.9);
+            
+            // Calculate survival and recurrence based on base risk
+            const survivalRate = Math.round((1 - baseRisk) * 100);
+            const recurrenceRisk = Math.round(baseRisk * 100);
+            
+            return {
+                overallRisk: Math.round(baseRisk * 100) + '%',
+                survivalRate: survivalRate + '%',
+                recurrenceRisk: recurrenceRisk + '%'
+            };
+        }
+
+        // Update the createRiskChart function
+        function createRiskChart(patient) {
+            const ctx = document.getElementById('riskChart').getContext('2d');
+            
+            // Calculate risk factors
+            const baseRisk = patient.riskScore || 0.35;
+            const withoutTreatment = baseRisk * 100;
+            const withSurgery = withoutTreatment * 0.5;
+            const withRadiation = withoutTreatment * 0.4;
+            const withChemo = withoutTreatment * 0.3;
+            const withHormonal = patient.er_status === 'positive' ? withoutTreatment * 0.4 : withoutTreatment;
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['No Treatment', 'Surgery', 'Surgery + Radiation', 'Surgery + Radiation + Chemo', 'Complete Protocol'],
+                    datasets: [{
+                        label: 'Risk Score (%)',
+                        data: [
+                            withoutTreatment,
+                            withSurgery,
+                            withRadiation,
+                            withChemo,
+                            withHormonal
+                        ],
+                        backgroundColor: [
+                            '#dc3545',  // Red for no treatment
+                            '#ffc107',  // Yellow for surgery
+                            '#20c997',  // Teal for radiation
+                            '#0dcaf0',  // Cyan for chemo
+                            '#198754'   // Green for complete protocol
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Risk Reduction with Treatment Protocol'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Risk: ${context.raw.toFixed(1)}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Risk Score (%)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Populate patient overview
+        function populatePatientOverview(patient) {
+            const overview = document.getElementById('patientOverview');
+            overview.innerHTML = `
+                <div class="col-md-3">
+                    <div class="metric-card">
+                        <div class="metric-value">${patient.age}</div>
+                        <div class="metric-label">Age</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="metric-card">
+                        <div class="metric-value">${patient.tumor_size}mm</div>
+                        <div class="metric-label">Tumor Size</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="metric-card">
+                        <div class="metric-value">Grade ${patient.grade}</div>
+                        <div class="metric-label">Tumor Grade</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="metric-card">
+                        <div class="metric-value">${patient.nodes_positive}</div>
+                        <div class="metric-label">Positive Nodes</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Populate treatment timeline
+        function populateTreatmentTimeline(patient) {
+            const timeline = document.getElementById('treatmentTimeline');
+            const treatments = [];
+
+            // Add treatments based on patient characteristics
+            if (patient.tumor_size <= 30) {
+                treatments.push({
+                    name: 'Surgery (Lumpectomy)',
+                    duration: '1-2 hours',
+                    recovery: '4-6 weeks'
+                });
+                treatments.push({
+                    name: 'Radiation Therapy',
+                    duration: '3-6 weeks',
+                    recovery: 'Concurrent with treatment'
+                });
+            } else {
+                treatments.push({
+                    name: 'Surgery (Mastectomy)',
+                    duration: '2-3 hours',
+                    recovery: '6-8 weeks'
+                });
+            }
+
+            if (patient.grade >= 2 || patient.nodes_positive > 0) {
+                treatments.push({
+                    name: 'Chemotherapy',
+                    duration: '3-6 months',
+                    recovery: '2-3 months after completion'
+                });
+            }
+
+            if (patient.er_status === 'positive') {
+                treatments.push({
+                    name: 'Hormonal Therapy',
+                    duration: '5-10 years',
+                    recovery: 'Ongoing'
+                });
+            }
+
+            // Create timeline HTML
+            timeline.innerHTML = treatments.map(treatment => `
+                <div class="timeline-item">
+                    <h5>${treatment.name}</h5>
+                    <p><strong>Duration:</strong> ${treatment.duration}</p>
+                    <p><strong>Recovery:</strong> ${treatment.recovery}</p>
+                </div>
+            `).join('');
+        }
+
+        // Populate treatment comparison table
+        function populateTreatmentComparison(patient) {
+            const comparison = document.getElementById('treatmentComparison').getElementsByTagName('tbody')[0];
+            comparison.innerHTML = `
+                <tr>
+                    <td>Surgery</td>
+                    <td>90%</td>
+                    <td>1-3 hours</td>
+                    <td>Moderate</td>
+                    <td>4-8 weeks</td>
+                    <td>High</td>
+                </tr>
+                <tr>
+                    <td>Radiation</td>
+                    <td>85%</td>
+                    <td>3-6 weeks</td>
+                    <td>Mild</td>
+                    <td>Minimal</td>
+                    <td>Moderate</td>
+                </tr>
+                <tr>
+                    <td>Chemotherapy</td>
+                    <td>75%</td>
+                    <td>3-6 months</td>
+                    <td>Severe</td>
+                    <td>2-3 months</td>
+                    <td>High</td>
+                </tr>
+                <tr>
+                    <td>Hormonal</td>
+                    <td>70%</td>
+                    <td>5-10 years</td>
+                    <td>Mild</td>
+                    <td>Minimal</td>
+                    <td>Low</td>
+                </tr>
+            `;
+        }
+
+        // Add the missing helper functions
+        function calculatePersonalizedEfficacy(patient, treatmentType) {
+            let baseEfficacy = {
+                'Surgery': 85,
+                'Radiation': 75,
+                'Chemotherapy': 70,
+                'Hormonal': 65
+            }[treatmentType];
+
+            // Adjust based on patient factors
+            if (treatmentType === 'Surgery') {
+                baseEfficacy -= (patient.tumor_size > 30 ? 10 : 0);
+                baseEfficacy -= (patient.nodes_positive > 2 ? 15 : 0);
+            } else if (treatmentType === 'Chemotherapy') {
+                baseEfficacy += (patient.grade >= 2 ? 10 : 0);
+                baseEfficacy += (patient.nodes_positive > 0 ? 15 : 0);
+            } else if (treatmentType === 'Hormonal') {
+                baseEfficacy += (patient.er_status === 'positive' ? 20 : -30);
+            }
+
+            return Math.min(Math.max(baseEfficacy, 30), 95); // Keep between 30% and 95%
+        }
+
+        function getIndianCosts(treatmentType) {
+            const costs = {
+                'Surgery': {
+                    'Metro': { min: 200000, max: 500000, currency: 'INR' },
+                    'Tier2': { min: 150000, max: 350000, currency: 'INR' },
+                    'Rural': { min: 100000, max: 250000, currency: 'INR' }
+                },
+                'Radiation': {
+                    'Metro': { min: 150000, max: 400000, currency: 'INR' },
+                    'Tier2': { min: 120000, max: 300000, currency: 'INR' },
+                    'Rural': { min: 100000, max: 250000, currency: 'INR' }
+                },
+                'Chemotherapy': {
+                    'Metro': { min: 300000, max: 800000, currency: 'INR' },
+                    'Tier2': { min: 250000, max: 600000, currency: 'INR' },
+                    'Rural': { min: 200000, max: 500000, currency: 'INR' }
+                },
+                'Hormonal': {
+                    'Metro': { min: 50000, max: 150000, currency: 'INR' },
+                    'Tier2': { min: 40000, max: 120000, currency: 'INR' },
+                    'Rural': { min: 30000, max: 100000, currency: 'INR' }
+                }
+            };
+            return costs[treatmentType];
+        }
+
+        // Update the populateEfficacyFindings function
+        function populateEfficacyFindings() {
+            const patient = getPatientData();
+            const findings = document.getElementById('efficacyFindings');
+            
+            const surgeryEfficacy = calculatePersonalizedEfficacy(patient, 'Surgery');
+            const radiationEfficacy = calculatePersonalizedEfficacy(patient, 'Radiation');
+            const chemoEfficacy = calculatePersonalizedEfficacy(patient, 'Chemotherapy');
+            const hormonalEfficacy = calculatePersonalizedEfficacy(patient, 'Hormonal');
+
+            findings.innerHTML = `
+                <li class="mb-3">
+                    <i class="fas ${surgeryEfficacy > 80 ? 'fa-check-circle text-success' : 'fa-info-circle text-warning'}"></i>
+                    <strong>Surgery:</strong> ${surgeryEfficacy}% expected success rate
+                    ${patient.tumor_size > 30 ? '<br><small class="text-muted">Note: Larger tumor size may affect outcome</small>' : ''}
+                </li>
+                <li class="mb-3">
+                    <i class="fas ${radiationEfficacy > 80 ? 'fa-check-circle text-success' : 'fa-info-circle text-warning'}"></i>
+                    <strong>Radiation:</strong> ${radiationEfficacy}% local control rate
+                    ${patient.tumor_size > 40 ? '<br><small class="text-muted">May require additional sessions</small>' : ''}
+                </li>
+                <li class="mb-3">
+                    <i class="fas ${chemoEfficacy > 80 ? 'fa-check-circle text-success' : 'fa-info-circle text-warning'}"></i>
+                    <strong>Chemotherapy:</strong> ${chemoEfficacy}% response rate
+                    ${patient.nodes_positive > 0 ? '<br><small class="text-muted">Recommended due to lymph node involvement</small>' : ''}
+                </li>
+                <li class="mb-3">
+                    <i class="fas ${hormonalEfficacy > 80 ? 'fa-check-circle text-success' : 'fa-info-circle text-warning'}"></i>
+                    <strong>Hormonal:</strong> ${hormonalEfficacy}% expected benefit
+                    ${patient.er_status === 'positive' ? '<br><small class="text-muted">Highly recommended for hormone-receptor positive status</small>' : 
+                     '<br><small class="text-muted">Limited benefit due to hormone-receptor negative status</small>'}
+                </li>
+            `;
+        }
+
+        // Update the createCostChart function
+        function createCostChart() {
+            const ctx = document.getElementById('costChart').getContext('2d');
+            
+            const treatments = ['Surgery', 'Radiation', 'Chemotherapy', 'Hormonal'];
+            const metroCosts = treatments.map(t => getIndianCosts(t).Metro.max / 1000); // Convert to thousands
+            const tier2Costs = treatments.map(t => getIndianCosts(t).Tier2.max / 1000);
+            const ruralCosts = treatments.map(t => getIndianCosts(t).Rural.max / 1000);
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: treatments,
+                    datasets: [{
+                        label: 'Metro Cities (₹ thousands)',
+                        data: metroCosts,
+                        backgroundColor: '#0d6efd'
+                    }, {
+                        label: 'Tier-2 Cities (₹ thousands)',
+                        data: tier2Costs,
+                        backgroundColor: '#20c997'
+                    }, {
+                        label: 'Rural Areas (₹ thousands)',
+                        data: ruralCosts,
+                        backgroundColor: '#ffc107'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Treatment Cost Comparison (Indian Context)'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Cost in Thousands (₹)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update the populateAccessibilityInfo function
+        function populateAccessibilityInfo() {
+            const accessibilityInfo = document.getElementById('accessibilityInfo');
+            accessibilityInfo.innerHTML = `
+                <div class="accessibility-factor">
+                    <h6>Surgery</h6>
+                    <p>Available at:</p>
+                    <ul class="list-unstyled">
+                        <li>✓ Major hospitals in metro cities</li>
+                        <li>✓ Select hospitals in tier-2 cities</li>
+                        <li>✓ Government medical colleges</li>
+                    </ul>
+                    <p>Coverage: Ayushman Bharat scheme applicable</p>
+                </div>
+                <div class="accessibility-factor">
+                    <h6>Radiation</h6>
+                    <p>Available at:</p>
+                    <ul class="list-unstyled">
+                        <li>✓ Specialized cancer centers in metros</li>
+                        <li>✓ Limited availability in tier-2 cities</li>
+                        <li>× Limited access in rural areas</li>
+                    </ul>
+                    <p>Coverage: Partial coverage under various schemes</p>
+                </div>
+                <div class="accessibility-factor">
+                    <h6>Chemotherapy</h6>
+                    <p>Available at:</p>
+                    <ul class="list-unstyled">
+                        <li>✓ Cancer hospitals in metros</li>
+                        <li>✓ District hospitals</li>
+                        <li>× May require travel from rural areas</li>
+                    </ul>
+                    <p>Coverage: Various state schemes available</p>
+                </div>
+                <div class="accessibility-factor">
+                    <h6>Hormonal</h6>
+                    <p>Available at:</p>
+                    <ul class="list-unstyled">
+                        <li>✓ Most hospitals and clinics</li>
+                        <li>✓ Government hospitals</li>
+                        <li>✓ Local pharmacies with prescription</li>
+                    </ul>
+                    <p>Coverage: Generic options available</p>
+                </div>
+            `;
+        }
+
+        // Update the createSurvivalChart function
+        function createSurvivalChart(patient) {
+            const ctx = document.getElementById('survivalChart').getContext('2d');
+            
+            // Calculate personalized survival rates based on patient factors
+            const baseRate = 100;
+            const yearlyDecline = calculateYearlyDecline(patient);
+            
+            // Generate survival curves for different scenarios
+            const withoutTreatment = [100];
+            const withTreatment = [100];
+            
+            for(let i = 1; i <= 5; i++) {
+                withoutTreatment.push(Math.max(baseRate - (yearlyDecline.withoutTreatment * i), 20));
+                withTreatment.push(Math.max(baseRate - (yearlyDecline.withTreatment * i), 50));
+            }
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['0', '1', '2', '3', '4', '5'],
+                    datasets: [{
+                        label: 'With Treatment',
+                        data: withTreatment,
+                        borderColor: '#198754',
+                        backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                        fill: true
+                    },
+                    {
+                        label: 'Without Treatment',
+                        data: withoutTreatment,
+                        borderColor: '#dc3545',
+                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Personalized 5-Year Survival Prediction'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Survival Probability (%)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Years'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Helper function to calculate yearly decline in survival
+        function calculateYearlyDecline(patient) {
+            let baseDecline = 5; // Base yearly decline
+            
+            // Adjust based on tumor characteristics
+            if (patient.grade) {
+                baseDecline += (patient.grade - 1) * 2;
+            }
+            
+            if (patient.nodes_positive) {
+                baseDecline += patient.nodes_positive * 3;
+            }
+            
+            if (patient.tumor_size > 30) {
+                baseDecline += 2;
+            }
+            
+            if (patient.er_status === 'negative') {
+                baseDecline += 3;
+            }
+            
+            return {
+                withoutTreatment: baseDecline * 2,
+                withTreatment: baseDecline * 0.5
+            };
+        }
+
+        // Add this helper function to calculate genomic profile
+        function calculateGenomicProfile(patient) {
+            let profile = {
+                confidence: 'Moderate',
+                confidenceClass: 'alert-info',
+                mutationBurden: 'Moderate',
+                mutationImplication: '',
+                mutations: [],
+                genomicGrade: '',
+                gradeImplication: '',
+                therapeuticTargets: []
+            };
+
+            // Adjust based on tumor grade
+            if (patient.grade >= 3) {
+                profile.mutationBurden = 'High';
+                profile.mutationImplication = 'Higher mutation burden suggests increased genomic instability';
+                profile.mutations.push({
+                    gene: 'TP53',
+                    implication: 'Associated with aggressive disease and poor prognosis'
+                });
+            } else if (patient.grade === 2) {
+                profile.mutationBurden = 'Moderate';
+                profile.mutationImplication = 'Moderate genomic complexity indicating standard treatment approach';
+            } else {
+                profile.mutationBurden = 'Low';
+                profile.mutationImplication = 'Lower genomic complexity suggesting good prognosis';
+            }
+
+            // Adjust based on hormone receptor status
+            if (patient.er_status === 'positive') {
+                profile.mutations.push({
+                    gene: 'PIK3CA',
+                    implication: 'Common in ER+ breast cancer, may benefit from PI3K inhibitors'
+                });
+                profile.therapeuticTargets.push({
+                    target: 'CDK4/6',
+                    rationale: 'Standard of care for HR+ disease with proven survival benefit'
+                });
+                profile.therapeuticTargets.push({
+                    target: 'Estrogen Receptor',
+                    rationale: 'Primary therapeutic target for hormonal therapy'
+                });
+            }
+
+            if (patient.her2_status === 'positive') {
+                profile.mutations.push({
+                    gene: 'ERBB2',
+                    implication: 'HER2 amplification indicates sensitivity to HER2-targeted therapy'
+                });
+                profile.therapeuticTargets.push({
+                    target: 'HER2',
+                    rationale: 'Primary therapeutic target with multiple approved targeted agents'
+                });
+            }
+
+            // Set genomic grade and implications
+            profile.genomicGrade = patient.grade >= 3 ? 'High' : patient.grade === 2 ? 'Intermediate' : 'Low';
+            profile.gradeImplication = `${profile.genomicGrade} grade suggests ${
+                patient.grade >= 3 ? 'more aggressive treatment approach needed' :
+                patient.grade === 2 ? 'standard treatment protocols indicated' :
+                'may consider de-escalation of therapy'
+            }`;
+
+            // Set confidence based on available data
+            if (patient.grade && patient.er_status && patient.her2_status) {
+                profile.confidence = 'High';
+                profile.confidenceClass = 'alert-success';
+            } else if (!patient.grade && !patient.er_status && !patient.her2_status) {
+                profile.confidence = 'Low';
+                profile.confidenceClass = 'alert-warning';
+            }
+
+            return profile;
+        }
+
+        // Update the initialization code to ensure proper loading order
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                const patient = getPatientData();
+                console.log('Patient data:', patient);
+
+                // Calculate confidence metrics first
+                const confidenceMetrics = calculateConfidenceMetrics(patient);
+                const aiConfidenceElement = document.getElementById('aiConfidence');
+                if (aiConfidenceElement) {
+                    aiConfidenceElement.textContent = `${confidenceMetrics.confidenceLevel} (${confidenceMetrics.confidence}%)`;
+                    if (confidenceMetrics.missingData.length > 0) {
+                        document.getElementById('missingData').innerHTML = `
+                            <small class="text-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Missing data that could improve recommendations: ${confidenceMetrics.missingData.join(', ')}
+                            </small>
+                        `;
+                    }
+                }
+
+                // Calculate risk metrics
+                const riskMetrics = calculateRiskMetrics(patient);
+                
+                // Update risk metrics display
+                document.getElementById('overallRisk').textContent = riskMetrics.overallRisk;
+                document.getElementById('survivalRate').textContent = riskMetrics.survivalRate;
+                document.getElementById('recurrenceRisk').textContent = riskMetrics.recurrenceRisk;
+
+                // Populate all sections
+                populatePatientOverview(patient);
+                populatePrimaryTreatment(patient);
+                populateDecisionFactors(patient);
+                populateGenomicFactors(patient);
+                populateBiomarkerAnalysis(patient);
+                populateTreatmentTimeline(patient);
+                populateEfficacyFindings();
+                populateToxicityTable();
+                populateQoLTable(patient);
+                populateAccessibilityInfo();
+                populateDetailedTreatmentInfo();
+                populateClinicalTrials(patient);
+
+                // Create all charts
+                createRiskChart(patient);
+                createEfficacyChart();
+                createQoLRadarChart(patient);
+                createCostChart();
+                createSurvivalChart(patient);
+                createRecurrenceChart(patient);
+
+            } catch (error) {
+                console.error('Error initializing page:', error);
+                document.getElementById('primaryTreatment').innerHTML = `
+                    <div class="alert alert-danger">
+                        <strong>Error:</strong> There was an error loading the treatment details. 
+                        <br>Error message: ${error.message}
+                        <br>Please try refreshing the page or contact support if the issue persists.
+                    </div>
+                `;
+            }
+        });
+
+        // Export PDF function (placeholder)
+        function exportPDF() {
+            alert('PDF export functionality will be implemented soon');
+        }
+
+        function populateDetailedTreatmentInfo() {
+            // Surgery Details
+            document.getElementById('surgeryDetails').innerHTML = `
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Procedure Details</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><strong>Type:</strong> Lumpectomy/Mastectomy based on tumor size</li>
+                            <li class="mb-2"><strong>Duration:</strong> 1-3 hours</li>
+                            <li class="mb-2"><strong>Hospital Stay:</strong> 1-3 days</li>
+                            <li class="mb-2"><strong>Recovery Time:</strong> 4-8 weeks</li>
+                        </ul>
+                        <h6 class="mt-3">Expected Outcomes</h6>
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: 85%">
+                                Success Rate: 85%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Radiation Details
+            document.getElementById('radiationDetails').innerHTML = `
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Treatment Protocol</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><strong>Sessions:</strong> 5 days/week for 3-6 weeks</li>
+                            <li class="mb-2"><strong>Duration per Session:</strong> 15-30 minutes</li>
+                            <li class="mb-2"><strong>Type:</strong> External Beam Radiation</li>
+                            <li class="mb-2"><strong>Recovery:</strong> Concurrent with treatment</li>
+                        </ul>
+                        <h6 class="mt-3">Local Control Rate</h6>
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: 75%">
+                                Effectiveness: 75%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Chemotherapy Details
+            document.getElementById('chemotherapyDetails').innerHTML = `
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Treatment Protocol</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><strong>Cycles:</strong> 4-8 cycles</li>
+                            <li class="mb-2"><strong>Frequency:</strong> Every 2-3 weeks</li>
+                            <li class="mb-2"><strong>Duration:</strong> 3-6 months total</li>
+                            <li class="mb-2"><strong>Administration:</strong> Intravenous/Oral</li>
+                        </ul>
+                        <h6 class="mt-3">Response Rate</h6>
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: 70%">
+                                Response Rate: 70%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Hormonal Therapy Details
+            document.getElementById('hormonalDetails').innerHTML = `
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Treatment Protocol</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><strong>Duration:</strong> 5-10 years</li>
+                            <li class="mb-2"><strong>Administration:</strong> Oral medication</li>
+                            <li class="mb-2"><strong>Monitoring:</strong> Regular hormone levels</li>
+                            <li class="mb-2"><strong>Type:</strong> Selective Estrogen Receptor Modulators</li>
+                        </ul>
+                        <h6 class="mt-3">Long-term Effectiveness</h6>
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: 65%">
+                                Effectiveness: 65%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createEfficacyChart() {
+            const ctx = document.getElementById('efficacyChart').getContext('2d');
+            const patient = getPatientData();
+            
+            // Calculate personalized efficacy rates
+            const surgeryEfficacy = calculatePersonalizedEfficacy(patient, 'Surgery');
+            const radiationEfficacy = calculatePersonalizedEfficacy(patient, 'Radiation');
+            const chemoEfficacy = calculatePersonalizedEfficacy(patient, 'Chemotherapy');
+            const hormonalEfficacy = calculatePersonalizedEfficacy(patient, 'Hormonal');
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Surgery', 'Radiation', 'Chemotherapy', 'Hormonal'],
+                    datasets: [{
+                        label: 'Response Rate (%)',
+                        data: [surgeryEfficacy, radiationEfficacy, chemoEfficacy, hormonalEfficacy],
+                        backgroundColor: '#0d6efd'
+                    }, {
+                        label: 'Disease-Free Survival (%)',
+                        data: [
+                            surgeryEfficacy * 0.95,
+                            radiationEfficacy * 0.9,
+                            chemoEfficacy * 0.85,
+                            hormonalEfficacy * 0.9
+                        ],
+                        backgroundColor: '#20c997'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Personalized Treatment Efficacy Comparison'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw.toFixed(1)}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Percentage (%)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createQoLRadarChart(patient) {
+            const ctx = document.getElementById('qolRadarChart').getContext('2d');
+            
+            // Calculate personalized QoL scores based on patient characteristics
+            const qolScores = calculatePersonalizedQoLScores(patient);
+            
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: [
+                        'Physical Function',
+                        'Daily Activities',
+                        'Emotional Well-being',
+                        'Social Function',
+                        'Sleep Quality',
+                        'Pain Management',
+                        'Energy Level',
+                        'Return to Work'
+                    ],
+                    datasets: [{
+                        label: 'Surgery',
+                        data: qolScores.surgery,
+                        borderColor: '#0d6efd',
+                        backgroundColor: 'rgba(13, 110, 253, 0.2)',
+                        fill: true
+                    }, {
+                        label: 'Radiation',
+                        data: qolScores.radiation,
+                        borderColor: '#20c997',
+                        backgroundColor: 'rgba(32, 201, 151, 0.2)',
+                        fill: true
+                    }, {
+                        label: 'Chemotherapy',
+                        data: qolScores.chemotherapy,
+                        borderColor: '#dc3545',
+                        backgroundColor: 'rgba(220, 53, 69, 0.2)',
+                        fill: true
+                    }, {
+                        label: 'Hormonal',
+                        data: qolScores.hormonal,
+                        borderColor: '#ffc107',
+                        backgroundColor: 'rgba(255, 193, 7, 0.2)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Personalized Quality of Life Impact Comparison'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw}%`;
+                                }
+                            }
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    },
+                    scales: {
+                        r: {
+                            min: 0,
+                            max: 100,
+                            ticks: {
+                                stepSize: 20
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function calculatePersonalizedQoLScores(patient) {
+            // Initialize base scores for each treatment
+            let baseScores = {
+                surgery: [65, 60, 75, 70, 80, 55, 65, 50],     // Physical, Daily, Emotional, Social, Sleep, Pain, Energy, Work
+                radiation: [70, 65, 75, 80, 75, 65, 60, 70],
+                chemotherapy: [45, 40, 50, 55, 45, 40, 35, 30],
+                hormonal: [80, 75, 70, 85, 75, 80, 75, 85]
+            };
+
+            // Adjust scores based on patient characteristics
+            const adjustScores = (scores) => {
+                // Age impact
+                if (patient.age > 70) {
+                    scores = scores.map(score => Math.max(0, score - 15)); // Reduced tolerance
+                } else if (patient.age > 60) {
+                    scores = scores.map(score => Math.max(0, score - 10));
+                } else if (patient.age < 40) {
+                    scores = scores.map(score => Math.min(100, score + 5)); // Better recovery
+                }
+
+                // Tumor size impact
+                if (patient.tumor_size > 50) {
+                    scores[0] -= 20; // Physical function
+                    scores[1] -= 15; // Daily activities
+                    scores[6] -= 15; // Energy level
+                } else if (patient.tumor_size > 30) {
+                    scores[0] -= 10;
+                    scores[1] -= 10;
+                    scores[6] -= 10;
+                }
+
+                // Lymph node involvement impact
+                if (patient.nodes_positive > 3) {
+                    scores[0] -= 15; // Physical function
+                    scores[7] -= 20; // Return to work
+                } else if (patient.nodes_positive > 0) {
+                    scores[0] -= 10;
+                    scores[7] -= 15;
+                }
+
+                // Grade impact
+                if (patient.grade === 3) {
+                    scores = scores.map(score => Math.max(0, score - 10));
+                }
+
+                // Comorbidities impact
+                if (patient.comorbidities && Array.isArray(patient.comorbidities)) {
+                    const comorbidityCount = patient.comorbidities.length;
+                    scores = scores.map(score => Math.max(0, score - (comorbidityCount * 5)));
+                }
+
+                // Receptor status impact
+                if (patient.er_status === 'negative') {
+                    baseScores.hormonal = baseScores.hormonal.map(score => Math.max(0, score - 20));
+                }
+                if (patient.her2_status === 'positive') {
+                    baseScores.chemotherapy = baseScores.chemotherapy.map(score => Math.max(0, score - 10));
+                }
+
+                // Ki-67 impact
+                if (patient.ki67 > 30) {
+                    scores = scores.map(score => Math.max(0, score - 10));
+                }
+
+                // Ensure all scores are between 0 and 100
+                return scores.map(score => Math.max(0, Math.min(100, Math.round(score))));
+            };
+
+            // Apply adjustments to each treatment type
+            return {
+                surgery: adjustScores([...baseScores.surgery]),
+                radiation: adjustScores([...baseScores.radiation]),
+                chemotherapy: adjustScores([...baseScores.chemotherapy]),
+                hormonal: adjustScores([...baseScores.hormonal])
+            };
+        }
+
+        function generatePersonalizedQoLData(patient) {
+            // Helper function to determine impact level
+            const getImpactLevel = (score) => {
+                if (score < 40) return 'Significant';
+                if (score < 60) return 'Moderate';
+                if (score < 80) return 'Mild';
+                return 'Minimal';
+            };
+
+            // Get personalized QoL scores
+            const qolScores = calculatePersonalizedQoLScores(patient);
+
+            return [
+                {
+                    metric: 'Physical Activity',
+                    surgery: {
+                        impact: getImpactLevel(qolScores.surgery[0]),
+                        duration: patient.tumor_size > 30 ? '6-8 weeks' : '4-6 weeks',
+                        details: `Recovery ${patient.age > 60 ? 'may be slower' : 'expected to be normal'}, ${patient.nodes_positive > 0 ? 'lymphedema risk' : 'standard recovery'}`
+                    },
+                    radiation: {
+                        impact: getImpactLevel(qolScores.radiation[0]),
+                        duration: '6-8 weeks',
+                        details: `${patient.tumor_size > 30 ? 'Extended' : 'Standard'} fatigue management needed`
+                    },
+                    chemo: {
+                        impact: getImpactLevel(qolScores.chemotherapy[0]),
+                        duration: '3-6 months',
+                        details: `${patient.age > 60 ? 'Careful monitoring' : 'Standard'} of physical tolerance required`
+                    },
+                    hormonal: {
+                        impact: getImpactLevel(qolScores.hormonal[0]),
+                        duration: '5-10 years',
+                        details: `${patient.er_status === 'positive' ? 'Joint stiffness likely' : 'Minimal physical impact'}`
+                    }
+                },
+                {
+                    metric: 'Daily Activities',
+                    surgery: {
+                        impact: getImpactLevel(qolScores.surgery[1]),
+                        duration: patient.tumor_size > 30 ? '8-12 weeks' : '4-8 weeks',
+                        details: `${patient.tumor_size > 30 ? 'Significant' : 'Moderate'} assistance needed initially`
+                    },
+                    radiation: {
+                        impact: getImpactLevel(qolScores.radiation[1]),
+                        duration: 'During treatment',
+                        details: `${patient.age > 60 ? 'May need help' : 'Should manage independently'} with daily tasks`
+                    },
+                    chemo: {
+                        impact: getImpactLevel(qolScores.chemotherapy[1]),
+                        duration: '4-6 months',
+                        details: `Support needed ${patient.age > 60 ? 'throughout treatment' : 'during peak side effects'}`
+                    },
+                    hormonal: {
+                        impact: getImpactLevel(qolScores.hormonal[1]),
+                        duration: 'Long-term',
+                        details: `${patient.er_status === 'positive' ? 'Some lifestyle adjustments' : 'Minimal impact'} expected`
+                    }
+                },
+                {
+                    metric: 'Emotional Well-being',
+                    surgery: {
+                        impact: getImpactLevel(qolScores.surgery[2]),
+                        duration: 'Variable',
+                        details: `${patient.tumor_size > 30 ? 'Body image concerns' : 'Standard adjustment'} expected`
+                    },
+                    radiation: {
+                        impact: getImpactLevel(qolScores.radiation[2]),
+                        duration: '2-3 months',
+                        details: `${patient.age < 40 ? 'May have fertility concerns' : 'Standard emotional support'} recommended`
+                    },
+                    chemo: {
+                        impact: getImpactLevel(qolScores.chemotherapy[2]),
+                        duration: '6-12 months',
+                        details: `${patient.age > 60 ? 'Enhanced emotional support' : 'Regular counseling'} recommended`
+                    },
+                    hormonal: {
+                        impact: getImpactLevel(qolScores.hormonal[2]),
+                        duration: 'Throughout treatment',
+                        details: `${patient.er_status === 'positive' ? 'Mood changes likely' : 'Limited emotional impact'}`
+                    }
+                },
+                {
+                    metric: 'Social Function',
+                    surgery: {
+                        impact: getImpactLevel(qolScores.surgery[3]),
+                        duration: '1-2 months',
+                        details: `${patient.tumor_size > 30 ? 'Temporary social limitations' : 'Brief adjustment'} expected`
+                    },
+                    radiation: {
+                        impact: getImpactLevel(qolScores.radiation[3]),
+                        duration: 'During treatment',
+                        details: `${patient.age > 60 ? 'May need social support' : 'Minimal social disruption'}`
+                    },
+                    chemo: {
+                        impact: getImpactLevel(qolScores.chemotherapy[3]),
+                        duration: '4-6 months',
+                        details: `${patient.nodes_positive > 0 ? 'Extended support needed' : 'Temporary adjustments'} recommended`
+                    },
+                    hormonal: {
+                        impact: getImpactLevel(qolScores.hormonal[3]),
+                        duration: 'Long-term',
+                        details: `${patient.er_status === 'positive' ? 'Some social adjustments' : 'Minimal social impact'}`
+                    }
+                },
+                {
+                    metric: 'Return to Work',
+                    surgery: {
+                        impact: getImpactLevel(qolScores.surgery[7]),
+                        duration: patient.tumor_size > 30 ? '8-12 weeks' : '4-6 weeks',
+                        details: `${patient.nodes_positive > 0 ? 'Extended leave' : 'Standard leave'} recommended`
+                    },
+                    radiation: {
+                        impact: getImpactLevel(qolScores.radiation[7]),
+                        duration: '6-8 weeks',
+                        details: `${patient.age > 60 ? 'Part-time recommended' : 'Flexible schedule'} during treatment`
+                    },
+                    chemo: {
+                        impact: getImpactLevel(qolScores.chemotherapy[7]),
+                        duration: '4-6 months',
+                        details: `${patient.grade >= 3 ? 'Extended leave needed' : 'Modified schedule'} recommended`
+                    },
+                    hormonal: {
+                        impact: getImpactLevel(qolScores.hormonal[7]),
+                        duration: 'Ongoing',
+                        details: `${patient.er_status === 'positive' ? 'Flexible arrangements' : 'Normal schedule'} possible`
+                    }
+                }
+            ];
+        }
+
+        function populateQoLTable(patient) {
+            const qolData = generatePersonalizedQoLData(patient);
+            const tbody = document.querySelector('#qolTable tbody');
+            
+            tbody.innerHTML = qolData.map(item => `
+                <tr>
+                    <td>
+                        <strong>${item.metric}</strong>
+                    </td>
+                    <td>
+                        <div class="impact-${item.surgery.impact.toLowerCase().replace(' ', '-')}">
+                            <strong>${item.surgery.impact}</strong><br>
+                            <small>Duration: ${item.surgery.duration}</small><br>
+                            <small class="text-muted">${item.surgery.details}</small>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="impact-${item.radiation.impact.toLowerCase().replace(' ', '-')}">
+                            <strong>${item.radiation.impact}</strong><br>
+                            <small>Duration: ${item.radiation.duration}</small><br>
+                            <small class="text-muted">${item.radiation.details}</small>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="impact-${item.chemo.impact.toLowerCase().replace(' ', '-')}">
+                            <strong>${item.chemo.impact}</strong><br>
+                            <small>Duration: ${item.chemo.duration}</small><br>
+                            <small class="text-muted">${item.chemo.details}</small>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="impact-${item.hormonal.impact.toLowerCase().replace(' ', '-')}">
+                            <strong>${item.hormonal.impact}</strong><br>
+                            <small>Duration: ${item.hormonal.duration}</small><br>
+                            <small class="text-muted">${item.hormonal.details}</small>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function populateClinicalTrials(patient) {
+            const tbody = document.querySelector('#clinicalTrialsTable tbody');
+            const trials = findMatchingTrials(patient);
+            
+            if (trials.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center">
+                            <div class="alert alert-info mb-0">
+                                No matching clinical trials found for the current patient profile.
+                                <br>
+                                <small>Consider broadening eligibility criteria or check back later for new trials.</small>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = trials.map(trial => `
+                <tr>
+                    <td>
+                        <a href="https://clinicaltrials.gov/ct2/show/${trial.id}" target="_blank">
+                            ${trial.id}
+                        </a>
+                    </td>
+                    <td>
+                        ${trial.description}
+                        <br>
+                        <small class="text-muted">Matching criteria: ${trial.matchDetails}</small>
+                    </td>
+                    <td>${trial.phase}</td>
+                    <td>
+                        ${trial.location}
+                        <br>
+                        <small class="text-muted">Distance: ${trial.distance} km</small>
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="progress flex-grow-1" style="height: 8px;">
+                                <div class="progress-bar ${trial.matchScore >= 80 ? 'bg-success' : 
+                                                     trial.matchScore >= 60 ? 'bg-info' : 
+                                                     'bg-warning'}" 
+                                     role="progressbar" 
+                                     style="width: ${trial.matchScore}%" 
+                                     aria-valuenow="${trial.matchScore}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                </div>
+                            </div>
+                            <span class="ms-2">${trial.matchScore}%</span>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" 
+                                onclick="window.open('https://clinicaltrials.gov/ct2/show/${trial.id}', '_blank')">
+                            View Details
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function findMatchingTrials(patient) {
+            // Define trials with more specific criteria
+            const trials = [
+                {
+                    id: 'NCT04915755',
+                    description: 'Novel CDK4/6 Inhibitor + AI Combination',
+                    phase: 'Phase 3',
+                    location: 'Tata Memorial Hospital, Mumbai',
+                    distance: 15,
+                    criteria: {
+                        er_status: 'positive',
+                        her2_status: 'negative',
+                        age: { min: 18, max: 75 },
+                        tumor_size: { min: 0, max: 50 },
+                        prior_treatment: false
+                    }
+                },
+                {
+                    id: 'NCT04584853',
+                    description: 'Immunotherapy + Chemotherapy Combination',
+                    phase: 'Phase 2',
+                    location: 'AIIMS, Delhi',
+                    distance: 25,
+                    criteria: {
+                        er_status: 'negative',
+                        pr_status: 'negative',
+                        her2_status: 'negative',
+                        age: { min: 18, max: 70 },
+                        nodes_positive: { min: 1 }
+                    }
+                },
+                {
+                    id: 'NCT04849637',
+                    description: 'HER2-Targeted Novel Agent',
+                    phase: 'Phase 2/3',
+                    location: 'Multiple Centers',
+                    distance: 30,
+                    criteria: {
+                        her2_status: 'positive',
+                        age: { min: 18, max: 80 },
+                        prior_treatment: false
+                    }
+                },
+                {
+                    id: 'NCT04776096',
+                    description: 'PI3K Inhibitor for PIK3CA-Mutated BC',
+                    phase: 'Phase 2',
+                    location: 'Regional Cancer Centre, Trivandrum',
+                    distance: 45,
+                    criteria: {
+                        er_status: 'positive',
+                        prior_treatment: true,
+                        age: { min: 18, max: 75 }
+                    }
+                }
+            ];
+
+            return trials
+                .map(trial => {
+                    const matchingCriteria = [];
+                    let matchScore = 0;
+                    let matchDetails = [];
+
+                    // Check age eligibility
+                    if (trial.criteria.age && patient.age >= trial.criteria.age.min && patient.age <= trial.criteria.age.max) {
+                        matchScore += 20;
+                        matchingCriteria.push('Age Eligible');
+                    }
+
+                    // Check ER status
+                    if (trial.criteria.er_status === patient.er_status) {
+                        matchScore += 25;
+                        matchingCriteria.push('ER Status Match');
+                        matchDetails.push(`ER ${patient.er_status}`);
+                    }
+
+                    // Check HER2 status
+                    if (trial.criteria.her2_status === patient.her2_status) {
+                        matchScore += 25;
+                        matchingCriteria.push('HER2 Status Match');
+                        matchDetails.push(`HER2 ${patient.her2_status}`);
+                    }
+
+                    // Check tumor size criteria
+                    if (trial.criteria.tumor_size && 
+                        patient.tumor_size >= trial.criteria.tumor_size.min && 
+                        patient.tumor_size <= trial.criteria.tumor_size.max) {
+                        matchScore += 15;
+                        matchingCriteria.push('Tumor Size Eligible');
+                    }
+
+                    // Check lymph node criteria
+                    if (trial.criteria.nodes_positive && 
+                        patient.nodes_positive >= trial.criteria.nodes_positive.min) {
+                        matchScore += 15;
+                        matchingCriteria.push('Lymph Node Status Match');
+                    }
+
+                    // Check triple negative status
+                    if (trial.criteria.er_status === 'negative' && 
+                        trial.criteria.pr_status === 'negative' && 
+                        trial.criteria.her2_status === 'negative' &&
+                        patient.er_status === 'negative' && 
+                        patient.pr_status === 'negative' && 
+                        patient.her2_status === 'negative') {
+                        matchScore += 30;
+                        matchingCriteria.push('Triple Negative Match');
+                        matchDetails.push('Triple Negative');
+                    }
+
+                    return {
+                        ...trial,
+                        matchScore: Math.min(matchScore, 100),
+                        matchingCriteria,
+                        matchDetails: matchDetails.join(', ')
+                    };
+                })
+                .filter(trial => trial.matchScore >= 40) // Show trials with at least 40% match
+                .sort((a, b) => b.matchScore - a.matchScore); // Sort by match score
+        }
+
+        // Add the confidence calculation function
+        function calculateConfidenceMetrics(patient) {
+            let confidence = 0;
+            let missingData = [];
+            let dataPoints = [];
+            
+            // Essential data points (weighted more heavily)
+            if (patient.tumor_size) {
+                confidence += 15;
+                dataPoints.push('Tumor Size');
+            } else missingData.push('Tumor Size');
+            
+            if (patient.grade) {
+                confidence += 15;
+                dataPoints.push('Tumor Grade');
+            } else missingData.push('Tumor Grade');
+            
+            if (patient.nodes_positive !== undefined) {
+                confidence += 15;
+                dataPoints.push('Lymph Node Status');
+            } else missingData.push('Lymph Node Status');
+            
+            // Molecular markers
+            if (patient.er_status) {
+                confidence += 10;
+                dataPoints.push('ER Status');
+            } else missingData.push('ER Status');
+            
+            if (patient.pr_status) {
+                confidence += 10;
+                dataPoints.push('PR Status');
+            } else missingData.push('PR Status');
+            
+            if (patient.her2_status) {
+                confidence += 10;
+                dataPoints.push('HER2 Status');
+            } else missingData.push('HER2 Status');
+            
+            // Additional factors
+            if (patient.ki67) {
+                confidence += 5;
+                dataPoints.push('Ki-67');
+            } else missingData.push('Ki-67');
+            
+            if (patient.genomic_score) {
+                confidence += 10;
+                dataPoints.push('Genomic Score');
+            } else missingData.push('Genomic Score');
+            
+            if (patient.comorbidities) {
+                confidence += 5;
+                dataPoints.push('Comorbidities');
+            } else missingData.push('Comorbidities');
+            
+            if (patient.age) {
+                confidence += 5;
+                dataPoints.push('Age');
+            } else missingData.push('Age');
+            
+            return { 
+                confidence, 
+                missingData,
+                dataPoints,
+                confidenceLevel: confidence >= 80 ? 'High' : confidence >= 60 ? 'Moderate' : 'Limited'
+            };
+        }
+
+        // Add the primary treatment population function
+        function populatePrimaryTreatment(patient) {
+            const container = document.getElementById('primaryTreatment');
+            
+            // Calculate personalized treatment plan
+            const treatments = [];
+            
+            // Surgery recommendation
+            if (patient.tumor_size <= 30) {
+                treatments.push({
+                    type: 'Surgery',
+                    details: 'Lumpectomy',
+                    protocol: 'Single procedure with clear margins',
+                    timing: 'Week 1',
+                    confidence: 90,
+                    rationale: 'Tumor size suitable for breast conservation'
+                });
+            } else {
+                treatments.push({
+                    type: 'Surgery',
+                    details: 'Mastectomy',
+                    protocol: 'Complete breast removal with possible reconstruction',
+                    timing: 'Week 1',
+                    confidence: 85,
+                    rationale: 'Large tumor size requires more extensive surgery'
+                });
+            }
+            
+            // Chemotherapy recommendation
+            if (patient.nodes_positive > 0 || patient.grade >= 2) {
+                treatments.push({
+                    type: 'Chemotherapy',
+                    details: 'AC-T Protocol',
+                    protocol: '4 cycles AC + 4 cycles Taxol',
+                    timing: 'Weeks 4-16',
+                    confidence: 80,
+                    rationale: patient.nodes_positive > 0 ? 'Positive lymph nodes indicate systemic therapy need' : 'High grade suggests aggressive disease'
+                });
+            }
+            
+            // Radiation recommendation
+            if (patient.tumor_size <= 50) {
+                treatments.push({
+                    type: 'Radiation',
+                    details: 'External Beam Radiation',
+                    protocol: '5 days/week for 3-6 weeks',
+                    timing: 'After surgery/chemotherapy',
+                    confidence: 85,
+                    rationale: 'Standard protocol for local control'
+                });
+            }
+            
+            // Hormonal therapy recommendation
+            if (patient.er_status === 'positive') {
+                treatments.push({
+                    type: 'Hormonal',
+                    details: 'Tamoxifen/Aromatase Inhibitor',
+                    protocol: 'Daily oral medication',
+                    timing: 'Years 1-5',
+                    confidence: 90,
+                    rationale: 'Hormone receptor positive status indicates high benefit'
+                });
+            }
+            
+            container.innerHTML = treatments.map(t => `
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">${t.type}</h5>
+                            <span class="badge bg-${t.confidence >= 85 ? 'success' : t.confidence >= 70 ? 'info' : 'warning'}">
+                                ${t.confidence}% Confidence
+                            </span>
+                        </div>
+                        <hr>
+                        <ul class="list-unstyled">
+                            <li><strong>Details:</strong> ${t.details}</li>
+                            <li><strong>Protocol:</strong> ${t.protocol}</li>
+                            <li><strong>Timing:</strong> ${t.timing}</li>
+                            <li class="mt-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle"></i> ${t.rationale}
+                                </small>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Add the decision factors population function
+        function populateDecisionFactors(patient) {
+            const container = document.getElementById('decisionFactors');
+            
+            const factors = [
+                {
+                    factor: 'Tumor Size',
+                    value: `${patient.tumor_size}mm`,
+                    impact: patient.tumor_size > 30 ? 'Indicates need for mastectomy' : 'Suitable for breast conservation',
+                    icon: patient.tumor_size > 30 ? 'fa-exclamation-triangle text-warning' : 'fa-check-circle text-success'
+                },
+                {
+                    factor: 'Lymph Nodes',
+                    value: `${patient.nodes_positive} positive`,
+                    impact: patient.nodes_positive > 0 ? 'Chemotherapy recommended' : 'May avoid chemotherapy',
+                    icon: patient.nodes_positive > 0 ? 'fa-exclamation-circle text-danger' : 'fa-check-circle text-success'
+                },
+                {
+                    factor: 'Hormone Status',
+                    value: patient.er_status || 'Unknown',
+                    impact: patient.er_status === 'positive' ? 'Hormonal therapy beneficial' : 'Hormonal therapy not indicated',
+                    icon: patient.er_status === 'positive' ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'
+                },
+                {
+                    factor: 'Grade',
+                    value: `Grade ${patient.grade}`,
+                    impact: patient.grade >= 3 ? 'Aggressive treatment needed' : 'Standard protocol suitable',
+                    icon: patient.grade >= 3 ? 'fa-exclamation-circle text-danger' : 'fa-check-circle text-success'
+                }
+            ];
+            
+            container.innerHTML = factors.map(f => `
+                <div class="mb-3">
+                    <div class="d-flex align-items-center mb-1">
+                        <i class="fas ${f.icon} me-2"></i>
+                        <strong>${f.factor}:</strong> ${f.value}
+                    </div>
+                    <small class="text-muted d-block ms-4">${f.impact}</small>
+                </div>
+            `).join('');
+        }
+
+        // Add the toxicity table population function
+        function populateToxicityTable() {
+            const toxicityData = [
+                {
+                    treatment: 'Surgery',
+                    sideEffects: 'Pain, Infection risk, Limited mobility',
+                    severity: 'Medium',
+                    duration: '4-6 weeks',
+                    management: 'Pain medication, Physical therapy, Wound care'
+                },
+                {
+                    treatment: 'Radiation',
+                    sideEffects: 'Skin changes, Fatigue, Local inflammation',
+                    severity: 'Medium',
+                    duration: 'During treatment + 2-4 weeks',
+                    management: 'Skin care, Rest periods, Anti-inflammatory medications'
+                },
+                {
+                    treatment: 'Chemotherapy',
+                    sideEffects: 'Nausea, Hair loss, Fatigue, Low blood counts',
+                    severity: 'High',
+                    duration: 'During treatment + 2-3 months',
+                    management: 'Anti-nausea meds, Blood support, Infection prevention'
+                },
+                {
+                    treatment: 'Hormonal',
+                    sideEffects: 'Hot flashes, Mood changes, Joint pain',
+                    severity: 'Low',
+                    duration: 'Throughout treatment',
+                    management: 'Symptom-specific medications, Lifestyle modifications'
+                }
+            ];
+
+            const tbody = document.querySelector('#toxicityTable tbody');
+            tbody.innerHTML = toxicityData.map(item => `
+                <tr>
+                    <td>${item.treatment}</td>
+                    <td>${item.sideEffects}</td>
+                    <td class="severity-${item.severity.toLowerCase()}">${item.severity}</td>
+                    <td>${item.duration}</td>
+                    <td>${item.management}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Add the populateGenomicFactors function
+        function populateGenomicFactors(patient) {
+            const container = document.getElementById('genomicFactors');
+            const genomicData = calculateGenomicProfile(patient);
+            
+            container.innerHTML = `
+                <div class="alert ${genomicData.confidenceClass} mb-3">
+                    <strong>Genomic Analysis Confidence:</strong> ${genomicData.confidence}
+                </div>
+                <ul class="list-unstyled">
+                    <li class="mb-3">
+                        <strong>Mutation Burden:</strong> ${genomicData.mutationBurden}
+                        <br>
+                        <small class="text-muted">${genomicData.mutationImplication}</small>
+                    </li>
+                    <li class="mb-3">
+                        <strong>Key Mutations:</strong>
+                        ${genomicData.mutations.map(m => `
+                            <div class="ms-3 mt-2">
+                                <i class="fas fa-dna text-primary"></i> ${m.gene}
+                                <br>
+                                <small class="text-muted">${m.implication}</small>
+                            </div>
+                        `).join('')}
+                    </li>
+                    <li class="mb-3">
+                        <strong>Genomic Grade:</strong> ${genomicData.genomicGrade}
+                        <br>
+                        <small class="text-muted">${genomicData.gradeImplication}</small>
+                    </li>
+                    <li class="mb-3">
+                        <strong>Recommended Targets:</strong>
+                        ${genomicData.therapeuticTargets.map(t => `
+                            <div class="ms-3 mt-2">
+                                <i class="fas fa-crosshairs text-success"></i> ${t.target}
+                                <br>
+                                <small class="text-muted">${t.rationale}</small>
+                            </div>
+                        `).join('')}
+                    </li>
+                </ul>
+            `;
+        }
+
+        // Add the populateBiomarkerAnalysis function
+        function populateBiomarkerAnalysis(patient) {
+            const container = document.getElementById('biomarkerAnalysis');
+            
+            const biomarkers = [
+                {
+                    name: 'ER Status',
+                    value: patient.er_status || 'Unknown',
+                    significance: patient.er_status === 'positive' ? 
+                        'Indicates likely benefit from hormonal therapy' : 
+                        'May require more aggressive treatment approach',
+                    icon: patient.er_status === 'positive' ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'
+                },
+                {
+                    name: 'PR Status',
+                    value: patient.pr_status || 'Unknown',
+                    significance: 'Additional hormone receptor marker',
+                    icon: patient.pr_status === 'positive' ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'
+                },
+                {
+                    name: 'HER2 Status',
+                    value: patient.her2_status || 'Unknown',
+                    significance: patient.her2_status === 'positive' ? 
+                        'Eligible for targeted HER2 therapy' : 
+                        'Standard treatment protocols indicated',
+                    icon: patient.her2_status === 'positive' ? 'fa-exclamation-circle text-warning' : 'fa-check-circle text-success'
+                },
+                {
+                    name: 'Ki-67',
+                    value: patient.ki67 ? `${patient.ki67}%` : 'Unknown',
+                    significance: patient.ki67 > 20 ? 
+                        'High proliferation rate, may benefit from chemotherapy' : 
+                        'Lower proliferation rate, may consider less aggressive treatment',
+                    icon: patient.ki67 > 20 ? 'fa-exclamation-circle text-warning' : 'fa-check-circle text-success'
+                }
+            ];
+            
+            container.innerHTML = `
+                <div class="biomarker-list">
+                    ${biomarkers.map(b => `
+                        <div class="mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas ${b.icon} me-2"></i>
+                                <strong>${b.name}:</strong> 
+                                <span class="ms-2">${b.value}</span>
+                            </div>
+                            <small class="text-muted d-block ms-4">
+                                ${b.significance}
+                            </small>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="alert alert-info mt-3">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Treatment Implications:</strong>
+                    <ul class="mb-0 mt-2">
+                        ${patient.er_status === 'positive' ? 
+                            '<li>Hormonal therapy recommended</li>' : ''}
+                        ${patient.her2_status === 'positive' ? 
+                            '<li>Consider HER2-targeted therapy</li>' : ''}
+                        ${(patient.ki67 > 20 || patient.grade >= 3) ? 
+                            '<li>Chemotherapy likely beneficial</li>' : ''}
+                    </ul>
+                </div>
+            `;
+        }
+
+        // Add the createRecurrenceChart function
+        function createRecurrenceChart(patient) {
+            const ctx = document.getElementById('recurrenceChart').getContext('2d');
+            
+            // Calculate recurrence risk based on patient factors
+            const baseRisk = 5; // Base yearly risk
+            const riskFactors = calculateRecurrenceRisk(patient);
+            
+            // Generate recurrence curves
+            const withTreatment = [0];
+            const withoutTreatment = [0];
+            
+            for(let i = 1; i <= 5; i++) {
+                withTreatment.push(Math.min(baseRisk + (riskFactors.withTreatment * i), 50));
+                withoutTreatment.push(Math.min(baseRisk + (riskFactors.withoutTreatment * i), 80));
+            }
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['0', '1', '2', '3', '4', '5'],
+                    datasets: [{
+                        label: 'With Treatment',
+                        data: withTreatment,
+                        borderColor: '#198754',
+                        backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                        fill: true
+                    },
+                    {
+                        label: 'Without Treatment',
+                        data: withoutTreatment,
+                        borderColor: '#dc3545',
+                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '5-Year Recurrence Risk'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Risk: ${context.raw.toFixed(1)}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Recurrence Risk (%)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Years'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Helper function to calculate recurrence risk
+        function calculateRecurrenceRisk(patient) {
+            let baseRisk = 3; // Base yearly risk increase
+            
+            // Adjust based on tumor characteristics
+            if (patient.grade) {
+                baseRisk += (patient.grade - 1) * 1.5;
+            }
+            
+            if (patient.nodes_positive) {
+                baseRisk += patient.nodes_positive * 2;
+            }
+            
+            if (patient.tumor_size > 30) {
+                baseRisk += 1.5;
+            }
+            
+            if (patient.er_status === 'negative') {
+                baseRisk += 2;
+            }
+            
+            return {
+                withoutTreatment: baseRisk * 2,
+                withTreatment: baseRisk * 0.4
+            };
+        }
+    </script>
+</body>
+</html> 

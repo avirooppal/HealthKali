@@ -1,0 +1,445 @@
+/* Dashboard Components Styles */
+
+/* Risk Assessment Section */
+.risk-score-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+}
+
+.score-circle {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.score-circle span:first-child {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.score-circle .score-label {
+    font-size: 1rem;
+    margin-top: 0.5rem;
+}
+
+/* Simulation Controls */
+#simulationControls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+#simulationControls button {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#simulationControls button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Timeline Events */
+.timeline-events {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.timeline-event {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-left: 3px solid #6B73FF;
+    background-color: rgba(107, 115, 255, 0.1);
+    border-radius: 4px;
+}
+
+/* Scenario Details */
+.scenario-details {
+    padding: 1rem;
+}
+
+.scenario-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.scenario-card h6 {
+    color: #6B73FF;
+    margin-bottom: 0.5rem;
+}
+
+/* Subtype Details */
+.subtype-details {
+    padding: 1rem;
+}
+
+.subtype-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.subtype-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #6B73FF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+/* Report Content */
+#reportContent {
+    padding: 2rem;
+}
+
+.report-section {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.report-section h4 {
+    color: #6B73FF;
+    margin-bottom: 1rem;
+}
+
+/* Export Controls */
+.export-controls {
+    padding: 1rem;
+}
+
+.export-controls .form-group {
+    margin-bottom: 1rem;
+}
+
+.export-controls .form-check {
+    margin-bottom: 0.5rem;
+}
+
+/* Card Styles */
+.card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+    color: #6B73FF;
+    font-weight: 600;
+}
+
+/* Chart Containers */
+.chart-container {
+    position: relative;
+    height: 300px;
+    margin-bottom: 1rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .score-circle {
+        width: 120px;
+        height: 120px;
+    }
+
+    .score-circle span:first-child {
+        font-size: 2rem;
+    }
+
+    .chart-container {
+        height: 250px;
+    }
+}
+
+/* Loading States */
+.loading {
+    position: relative;
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading::after {
+    content: '';
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #6B73FF;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Treatment Scenarios Styles */
+.scenario-metrics {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.scenario-metrics .h5 {
+    color: #6B73FF;
+    font-weight: 600;
+}
+
+.side-effects {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.side-effects .badge {
+    font-size: 0.8rem;
+    padding: 0.4em 0.8em;
+    border-radius: 20px;
+    background-color: rgba(107, 115, 255, 0.1);
+    color: #6B73FF;
+    border: 1px solid rgba(107, 115, 255, 0.2);
+}
+
+.cost-level .badge {
+    font-size: 0.8rem;
+    padding: 0.4em 0.8em;
+    border-radius: 20px;
+}
+
+.scenario-card {
+    transition: all 0.3s ease;
+}
+
+.scenario-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.scenario-card h6 {
+    color: #6B73FF;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.scenario-card p {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Chart Legend Styles */
+.chart-legend {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.chart-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.chart-legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+.chart-legend-label {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Treatment Recommendations Styles */
+.treatment-recommendations {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.treatment-category {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.treatment-category h5 {
+    color: #6B73FF;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(107, 115, 255, 0.1);
+}
+
+.treatment-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.treatment-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.treatment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.treatment-header h6 {
+    color: #6B73FF;
+    font-weight: 600;
+    margin: 0;
+}
+
+.success-rate {
+    background-color: rgba(107, 115, 255, 0.1);
+    color: #6B73FF;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.treatment-description {
+    color: #666;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.treatment-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.detail-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.detail-label {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.detail-value {
+    color: #333;
+    font-weight: 500;
+}
+
+.cost-breakdown {
+    background-color: #fff;
+    border-radius: 6px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.cost-breakdown h6 {
+    color: #6B73FF;
+    margin-bottom: 1rem;
+}
+
+.cost-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.cost-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.cost-label {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.cost-value {
+    color: #333;
+    font-weight: 500;
+}
+
+.side-effects {
+    margin-top: 1.5rem;
+}
+
+.side-effects h6 {
+    color: #6B73FF;
+    margin-bottom: 1rem;
+}
+
+.side-effects-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.side-effect-badge {
+    background-color: rgba(107, 115, 255, 0.1);
+    color: #6B73FF;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    border: 1px solid rgba(107, 115, 255, 0.2);
+}
+
+/* Responsive adjustments for treatment cards */
+@media (max-width: 768px) {
+    .treatment-details,
+    .cost-details {
+        grid-template-columns: 1fr;
+    }
+
+    .treatment-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .success-rate {
+        align-self: flex-start;
+    }
+} 

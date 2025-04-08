@@ -7,6 +7,8 @@ patient characteristics, biomarker status, and clinical guidelines.
 from typing import Dict, List, Optional, Tuple, Union, Any
 import math
 import logging
+from ..risk_models.advanced_risk import predict_survival_probability, calculate_recurrence_score
+from ..risk_models.baseline_risk import calculate_baseline_risk
 
 def generate_treatment_recommendations(
     patient_data: Dict[str, Any]
@@ -30,6 +32,14 @@ def generate_treatment_recommendations(
     her2_status = patient_data.get('her2_status', 'negative')
     molecular_subtype = patient_data.get('molecular_subtype', 'unknown')
     
+    # Get baseline risk assessment
+    baseline_risk = calculate_baseline_risk(patient_data)
+    
+    # Get advanced risk assessment
+    time_points = [60]  # 5 years in months
+    survival_prob = predict_survival_probability(patient_data, time_points)
+    recurrence_score = calculate_recurrence_score(patient_data)
+    
     # Get NCCN guideline treatments
     nccn_treatments = get_nccn_guideline_treatments(
         molecular_subtype, tumor_size, nodes_positive, grade
@@ -38,39 +48,67 @@ def generate_treatment_recommendations(
     # Initialize recommendations
     recommended_treatments = []
     
-    # Add surgical options
+    # Add surgical options with risk assessments
     if tumor_size <= 30:  # Tumors <= 3cm may be eligible for breast conservation
+        surgical_risk = calculate_surgical_risk(patient_data, 'breast_conserving')
         recommended_treatments.append({
             'treatment_type': 'surgery',
             'regimen': 'Breast Conserving Surgery',
             'duration_months': 1,
-            'rationale': 'Tumor size and clinical presentation are suitable for breast conservation.'
+            'rationale': 'Tumor size and clinical presentation are suitable for breast conservation.',
+            'risk_assessment': {
+                'risk_score': surgical_risk['risk_score'],
+                '5_year_survival': surgical_risk['5_year_survival'],
+                'recurrence_risk': surgical_risk['recurrence_risk'],
+                'disease_free_survival': surgical_risk['disease_free_survival']
+            }
         })
     
+    surgical_risk = calculate_surgical_risk(patient_data, 'mastectomy')
     recommended_treatments.append({
         'treatment_type': 'surgery',
         'regimen': 'Mastectomy',
         'duration_months': 1,
-        'rationale': 'Alternative surgical approach with lower local recurrence risk.'
+        'rationale': 'Alternative surgical approach with lower local recurrence risk.',
+        'risk_assessment': {
+            'risk_score': surgical_risk['risk_score'],
+            '5_year_survival': surgical_risk['5_year_survival'],
+            'recurrence_risk': surgical_risk['recurrence_risk'],
+            'disease_free_survival': surgical_risk['disease_free_survival']
+        }
     })
     
     # Add radiation therapy if breast conservation is planned
     if tumor_size <= 30:
+        radiation_risk = calculate_radiation_risk(patient_data)
         recommended_treatments.append({
             'treatment_type': 'radiation',
             'regimen': 'Whole Breast Radiation',
             'duration_months': 1.5,  # 6 weeks
-            'rationale': 'Standard adjuvant therapy after breast conserving surgery.'
+            'rationale': 'Standard adjuvant therapy after breast conserving surgery.',
+            'risk_assessment': {
+                'risk_score': radiation_risk['risk_score'],
+                '5_year_survival': radiation_risk['5_year_survival'],
+                'recurrence_risk': radiation_risk['recurrence_risk'],
+                'disease_free_survival': radiation_risk['disease_free_survival']
+            }
         })
     
     # Add systemic therapy based on subtype and stage
     # Hormone positive disease
     if er_status == 'positive' or pr_status == 'positive':
+        hormone_risk = calculate_hormone_therapy_risk(patient_data)
         recommended_treatments.append({
             'treatment_type': 'hormone_therapy',
             'regimen': 'Tamoxifen' if age < 50 else 'Aromatase Inhibitor',
             'duration_months': 60,  # 5 years
-            'rationale': 'Hormone receptor positive disease benefits from endocrine therapy.'
+            'rationale': 'Hormone receptor positive disease benefits from endocrine therapy.',
+            'risk_assessment': {
+                'risk_score': hormone_risk['risk_score'],
+                '5_year_survival': hormone_risk['5_year_survival'],
+                'recurrence_risk': hormone_risk['recurrence_risk'],
+                'disease_free_survival': hormone_risk['disease_free_survival']
+            }
         })
     
     # Check for chemotherapy indications
@@ -104,21 +142,35 @@ def generate_treatment_recommendations(
     # Add chemotherapy if indicated
     if chemo_indicated:
         chemo_regimen = 'TC' if nodes_positive == 0 else 'AC-T'
+        chemo_risk = calculate_chemotherapy_risk(patient_data, chemo_regimen)
         
         recommended_treatments.append({
             'treatment_type': 'chemotherapy',
             'regimen': chemo_regimen,
             'duration_months': 3 if nodes_positive == 0 else 6,
-            'rationale': 'Chemotherapy indicated due to: ' + ', '.join(chemo_rationale)
+            'rationale': 'Chemotherapy indicated due to: ' + ', '.join(chemo_rationale),
+            'risk_assessment': {
+                'risk_score': chemo_risk['risk_score'],
+                '5_year_survival': chemo_risk['5_year_survival'],
+                'recurrence_risk': chemo_risk['recurrence_risk'],
+                'disease_free_survival': chemo_risk['disease_free_survival']
+            }
         })
     
     # Add targeted therapy for HER2+ disease
     if her2_status == 'positive':
+        targeted_risk = calculate_targeted_therapy_risk(patient_data)
         recommended_treatments.append({
             'treatment_type': 'targeted_therapy',
             'regimen': 'Trastuzumab',
             'duration_months': 12,
-            'rationale': 'HER2 targeted therapy improves outcomes in HER2 positive disease.'
+            'rationale': 'HER2 targeted therapy improves outcomes in HER2 positive disease.',
+            'risk_assessment': {
+                'risk_score': targeted_risk['risk_score'],
+                '5_year_survival': targeted_risk['5_year_survival'],
+                'recurrence_risk': targeted_risk['recurrence_risk'],
+                'disease_free_survival': targeted_risk['disease_free_survival']
+            }
         })
     
     # Check for contraindications
@@ -129,9 +181,9 @@ def generate_treatment_recommendations(
         if not contraindications:
             final_recommendations.append(treatment)
         else:
-            # You can handle contraindications here, e.g., adding them to the response
-            # or modifying treatments as needed
-            pass
+            # Add contraindications to the treatment info
+            treatment['contraindications'] = contraindications
+            final_recommendations.append(treatment)
     
     return {
         'recommended_treatments': final_recommendations,
@@ -145,7 +197,86 @@ def generate_treatment_recommendations(
             'pr_status': pr_status,
             'her2_status': her2_status,
             'molecular_subtype': molecular_subtype
+        },
+        'baseline_risk': baseline_risk,
+        'advanced_risk': {
+            'survival_probability': survival_prob,
+            'recurrence_score': recurrence_score
         }
+    }
+
+def calculate_surgical_risk(patient_data: Dict[str, Any], surgery_type: str) -> Dict[str, float]:
+    """Calculate risk assessment for surgical procedures"""
+    # Base risk from baseline assessment
+    baseline = calculate_baseline_risk(patient_data)
+    
+    # Adjust risk based on surgery type
+    if surgery_type == 'breast_conserving':
+        risk_multiplier = 1.1  # Slightly higher risk for breast conservation
+    else:  # mastectomy
+        risk_multiplier = 0.9  # Slightly lower risk for mastectomy
+    
+    return {
+        'risk_score': baseline['5_year_risk'] * risk_multiplier,
+        '5_year_survival': 100 - (baseline['5_year_risk'] * risk_multiplier),
+        'recurrence_risk': baseline['10_year_risk'] * risk_multiplier,
+        'disease_free_survival': 100 - (baseline['10_year_risk'] * risk_multiplier)
+    }
+
+def calculate_radiation_risk(patient_data: Dict[str, Any]) -> Dict[str, float]:
+    """Calculate risk assessment for radiation therapy"""
+    baseline = calculate_baseline_risk(patient_data)
+    
+    # Radiation typically reduces risk
+    risk_reduction = 0.3  # 30% risk reduction
+    
+    return {
+        'risk_score': baseline['5_year_risk'] * (1 - risk_reduction),
+        '5_year_survival': 100 - (baseline['5_year_risk'] * (1 - risk_reduction)),
+        'recurrence_risk': baseline['10_year_risk'] * (1 - risk_reduction),
+        'disease_free_survival': 100 - (baseline['10_year_risk'] * (1 - risk_reduction))
+    }
+
+def calculate_hormone_therapy_risk(patient_data: Dict[str, Any]) -> Dict[str, float]:
+    """Calculate risk assessment for hormone therapy"""
+    baseline = calculate_baseline_risk(patient_data)
+    
+    # Hormone therapy reduces risk for ER+ disease
+    risk_reduction = 0.4  # 40% risk reduction
+    
+    return {
+        'risk_score': baseline['5_year_risk'] * (1 - risk_reduction),
+        '5_year_survival': 100 - (baseline['5_year_risk'] * (1 - risk_reduction)),
+        'recurrence_risk': baseline['10_year_risk'] * (1 - risk_reduction),
+        'disease_free_survival': 100 - (baseline['10_year_risk'] * (1 - risk_reduction))
+    }
+
+def calculate_chemotherapy_risk(patient_data: Dict[str, Any], regimen: str) -> Dict[str, float]:
+    """Calculate risk assessment for chemotherapy"""
+    baseline = calculate_baseline_risk(patient_data)
+    
+    # Chemotherapy reduces risk more aggressively
+    risk_reduction = 0.5 if regimen == 'AC-T' else 0.4  # 50% for AC-T, 40% for TC
+    
+    return {
+        'risk_score': baseline['5_year_risk'] * (1 - risk_reduction),
+        '5_year_survival': 100 - (baseline['5_year_risk'] * (1 - risk_reduction)),
+        'recurrence_risk': baseline['10_year_risk'] * (1 - risk_reduction),
+        'disease_free_survival': 100 - (baseline['10_year_risk'] * (1 - risk_reduction))
+    }
+
+def calculate_targeted_therapy_risk(patient_data: Dict[str, Any]) -> Dict[str, float]:
+    """Calculate risk assessment for targeted therapy"""
+    baseline = calculate_baseline_risk(patient_data)
+    
+    # Targeted therapy provides significant risk reduction for HER2+ disease
+    risk_reduction = 0.45  # 45% risk reduction
+    
+    return {
+        'risk_score': baseline['5_year_risk'] * (1 - risk_reduction),
+        '5_year_survival': 100 - (baseline['5_year_risk'] * (1 - risk_reduction)),
+        'recurrence_risk': baseline['10_year_risk'] * (1 - risk_reduction),
+        'disease_free_survival': 100 - (baseline['10_year_risk'] * (1 - risk_reduction))
     }
 
 def get_nccn_guideline_treatments(
